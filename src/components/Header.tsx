@@ -1,14 +1,45 @@
 import { Link } from "@tanstack/react-router";
-import { Search, Menu, BookOpen, X } from "lucide-react";
+import { Search, Menu, BookOpen, X, Clock, Trash2 } from "lucide-react";
 import { useState, useEffect, useRef, useMemo } from "react";
 import { series, allGenres } from "@/lib/series";
+
+const RECENT_KEY = "heavenscans:recent-searches";
+const MAX_RECENT = 8;
 
 export function Header() {
   const [open, setOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const [recent, setRecent] = useState<string[]>([]);
   const searchRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(RECENT_KEY);
+      if (raw) setRecent(JSON.parse(raw));
+    } catch {}
+  }, []);
+
+  const persistRecent = (next: string[]) => {
+    setRecent(next);
+    try {
+      localStorage.setItem(RECENT_KEY, JSON.stringify(next));
+    } catch {}
+  };
+
+  const addRecent = (term: string) => {
+    const t = term.trim();
+    if (!t) return;
+    const next = [t, ...recent.filter((r) => r.toLowerCase() !== t.toLowerCase())].slice(0, MAX_RECENT);
+    persistRecent(next);
+  };
+
+  const removeRecent = (term: string) => {
+    persistRecent(recent.filter((r) => r !== term));
+  };
+
+  const clearRecent = () => persistRecent([]);
 
   const q = query.trim().toLowerCase();
   const { matchedSeries, matchedGenres } = useMemo(() => {
@@ -51,6 +82,16 @@ export function Header() {
     setQuery("");
   };
 
+  const onSelectResult = (term: string) => {
+    addRecent(term);
+    closeSearch();
+  };
+
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (query.trim()) addRecent(query);
+  };
+
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
@@ -81,7 +122,7 @@ export function Header() {
             </button>
             {searchOpen && (
               <div className="absolute right-0 top-11 w-[calc(100vw-2rem)] sm:w-96 rounded-xl border border-border bg-card shadow-[var(--shadow-card)] overflow-hidden">
-                <div className="flex items-center gap-2 border-b border-border px-3">
+                <form onSubmit={onSubmit} className="flex items-center gap-2 border-b border-border px-3">
                   <Search className="h-4 w-4 text-muted-foreground" />
                   <input
                     ref={inputRef}
@@ -91,15 +132,54 @@ export function Header() {
                     className="flex-1 bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground"
                   />
                   {query && (
-                    <button onClick={() => setQuery("")} className="text-muted-foreground hover:text-foreground">
+                    <button type="button" onClick={() => setQuery("")} className="text-muted-foreground hover:text-foreground">
                       <X className="h-4 w-4" />
                     </button>
                   )}
-                </div>
+                </form>
                 <div className="max-h-[60vh] overflow-y-auto">
-                  {!q && (
+                  {!q && recent.length === 0 && (
                     <div className="p-6 text-center text-sm text-muted-foreground">
                       Tape pour rechercher dans le catalogue.
+                    </div>
+                  )}
+                  {!q && recent.length > 0 && (
+                    <div className="py-2">
+                      <div className="flex items-center justify-between px-3 pb-1">
+                        <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                          <Clock className="h-3 w-3" /> Récentes
+                        </div>
+                        <button
+                          onClick={clearRecent}
+                          className="inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors"
+                        >
+                          <Trash2 className="h-3 w-3" /> Effacer
+                        </button>
+                      </div>
+                      {recent.map((term) => (
+                        <div
+                          key={term}
+                          className="flex items-center gap-2 px-3 py-2 hover:bg-muted transition-colors group"
+                        >
+                          <Clock className="h-3.5 w-3.5 text-muted-foreground flex-shrink-0" />
+                          <button
+                            onClick={() => {
+                              setQuery(term);
+                              inputRef.current?.focus();
+                            }}
+                            className="flex-1 text-left text-sm truncate"
+                          >
+                            {term}
+                          </button>
+                          <button
+                            onClick={() => removeRecent(term)}
+                            aria-label={`Supprimer ${term}`}
+                            className="text-muted-foreground hover:text-foreground opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            <X className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
+                      ))}
                     </div>
                   )}
                   {q && matchedSeries.length === 0 && matchedGenres.length === 0 && (
@@ -115,7 +195,7 @@ export function Header() {
                           key={s.slug}
                           to="/series/$slug"
                           params={{ slug: s.slug }}
-                          onClick={closeSearch}
+                          onClick={() => onSelectResult(s.title)}
                           className="flex items-center gap-3 px-3 py-2 hover:bg-muted transition-colors"
                         >
                           <div className="h-12 w-9 flex-shrink-0 overflow-hidden rounded bg-muted">
@@ -137,7 +217,7 @@ export function Header() {
                           <Link
                             key={g}
                             to="/genres"
-                            onClick={closeSearch}
+                            onClick={() => onSelectResult(g)}
                             className="rounded-full border border-border bg-background px-3 py-1 text-xs font-medium hover:border-primary hover:text-primary transition-colors"
                           >
                             {g}
