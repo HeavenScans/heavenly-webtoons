@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SeriesRouteImport } from './routes/series'
+import { Route as PremiumRouteImport } from './routes/premium'
 import { Route as LatestRouteImport } from './routes/latest'
 import { Route as GenresRouteImport } from './routes/genres'
 import { Route as IndexRouteImport } from './routes/index'
@@ -18,6 +19,11 @@ import { Route as SeriesSlugRouteImport } from './routes/series.$slug'
 const SeriesRoute = SeriesRouteImport.update({
   id: '/series',
   path: '/series',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PremiumRoute = PremiumRouteImport.update({
+  id: '/premium',
+  path: '/premium',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LatestRoute = LatestRouteImport.update({
@@ -45,6 +51,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/genres': typeof GenresRoute
   '/latest': typeof LatestRoute
+  '/premium': typeof PremiumRoute
   '/series': typeof SeriesRouteWithChildren
   '/series/$slug': typeof SeriesSlugRoute
 }
@@ -52,6 +59,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/genres': typeof GenresRoute
   '/latest': typeof LatestRoute
+  '/premium': typeof PremiumRoute
   '/series': typeof SeriesRouteWithChildren
   '/series/$slug': typeof SeriesSlugRoute
 }
@@ -60,21 +68,36 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/genres': typeof GenresRoute
   '/latest': typeof LatestRoute
+  '/premium': typeof PremiumRoute
   '/series': typeof SeriesRouteWithChildren
   '/series/$slug': typeof SeriesSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/genres' | '/latest' | '/series' | '/series/$slug'
+  fullPaths:
+    | '/'
+    | '/genres'
+    | '/latest'
+    | '/premium'
+    | '/series'
+    | '/series/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/genres' | '/latest' | '/series' | '/series/$slug'
-  id: '__root__' | '/' | '/genres' | '/latest' | '/series' | '/series/$slug'
+  to: '/' | '/genres' | '/latest' | '/premium' | '/series' | '/series/$slug'
+  id:
+    | '__root__'
+    | '/'
+    | '/genres'
+    | '/latest'
+    | '/premium'
+    | '/series'
+    | '/series/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   GenresRoute: typeof GenresRoute
   LatestRoute: typeof LatestRoute
+  PremiumRoute: typeof PremiumRoute
   SeriesRoute: typeof SeriesRouteWithChildren
 }
 
@@ -85,6 +108,13 @@ declare module '@tanstack/react-router' {
       path: '/series'
       fullPath: '/series'
       preLoaderRoute: typeof SeriesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/premium': {
+      id: '/premium'
+      path: '/premium'
+      fullPath: '/premium'
+      preLoaderRoute: typeof PremiumRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/latest': {
@@ -133,8 +163,19 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   GenresRoute: GenresRoute,
   LatestRoute: LatestRoute,
+  PremiumRoute: PremiumRoute,
   SeriesRoute: SeriesRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
