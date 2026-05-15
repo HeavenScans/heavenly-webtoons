@@ -4,7 +4,7 @@ import { Footer } from "@/components/Footer";
 import { SeriesCard } from "@/components/SeriesCard";
 import { EmptyState } from "@/components/EmptyState";
 import { series, allGenres } from "@/lib/series";
-import { Flame, Sparkles, TrendingUp, ArrowRight } from "lucide-react";
+import { Flame, Sparkles, TrendingUp, ArrowRight, Crown, Zap, ShieldOff, BookOpen } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/")({
@@ -100,6 +100,46 @@ function Index() {
                 {g}
               </Link>
             ))}
+          </div>
+        </section>
+
+        {/* Premium teaser */}
+        <section className="relative overflow-hidden rounded-3xl border border-[color:var(--glass-border)] bg-[color:var(--glass-bg)] backdrop-blur-xl p-8 sm:p-12">
+          <div className="absolute inset-0 -z-10 [background:radial-gradient(circle_at_15%_20%,oklch(0.75_0.18_240/0.3),transparent_55%),radial-gradient(circle_at_85%_80%,oklch(0.65_0.25_295/0.3),transparent_55%)]" />
+          <div className="grid gap-8 md:grid-cols-[1.2fr_1fr] items-center">
+            <div>
+              <div className="inline-flex items-center gap-2 rounded-full border border-[color:var(--glass-border)] bg-background/50 backdrop-blur px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-[color:var(--neon-blue)]">
+                <Crown className="h-3 w-3" /> HeavenScans Premium
+              </div>
+              <h2 className="mt-4 text-3xl sm:text-4xl font-black tracking-tight">
+                Lecture <span className="bg-[image:var(--gradient-neon)] bg-clip-text text-transparent">sans limite</span>, sans pub.
+              </h2>
+              <p className="mt-3 max-w-md text-muted-foreground">
+                Accès anticipé, chapitres exclusifs et soutien direct à l'équipe de traduction.
+              </p>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <Link to="/premium" className="inline-flex items-center gap-2 rounded-xl bg-[image:var(--gradient-neon)] px-5 py-3 text-sm font-bold text-white shadow-[var(--shadow-neon)] hover:scale-[1.02] transition">
+                  <Crown className="h-4 w-4" /> Devenir Premium
+                </Link>
+                <Link to="/premium" className="inline-flex items-center gap-2 rounded-xl border border-[color:var(--glass-border)] bg-background/40 backdrop-blur px-5 py-3 text-sm font-bold hover:border-[color:var(--neon-violet)] hover:text-[color:var(--neon-violet)] transition">
+                  Voir les avantages
+                </Link>
+              </div>
+            </div>
+            <ul className="grid gap-3">
+              {[
+                { Icon: Zap, t: "Accès anticipé aux chapitres" },
+                { Icon: ShieldOff, t: "Lecture sans publicité" },
+                { Icon: BookOpen, t: "Chapitres exclusifs Premium" },
+              ].map(({ Icon, t }) => (
+                <li key={t} className="flex items-center gap-3 rounded-xl border border-[color:var(--glass-border)] bg-background/40 backdrop-blur px-4 py-3 transition hover:translate-x-1 hover:border-[color:var(--neon-blue)]/40">
+                  <span className="grid h-9 w-9 place-items-center rounded-lg bg-[image:var(--gradient-neon)] shadow-[var(--shadow-neon-violet)]">
+                    <Icon className="h-4 w-4 text-white" />
+                  </span>
+                  <span className="text-sm font-semibold">{t}</span>
+                </li>
+              ))}
+            </ul>
           </div>
         </section>
       </main>

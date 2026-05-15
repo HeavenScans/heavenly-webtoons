@@ -109,6 +109,9 @@ export function Header() {
           <Link to="/series" className="text-muted-foreground hover:text-foreground transition-colors" activeProps={{ className: "text-foreground" }}>Séries</Link>
           <Link to="/genres" className="text-muted-foreground hover:text-foreground transition-colors" activeProps={{ className: "text-foreground" }}>Genres</Link>
           <Link to="/latest" className="text-muted-foreground hover:text-foreground transition-colors" activeProps={{ className: "text-foreground" }}>Derniers chapitres</Link>
+          <Link to="/premium" className="inline-flex items-center gap-1.5 rounded-full border border-[color:var(--glass-border)] bg-[color:var(--glass-bg)] backdrop-blur px-3 py-1 text-xs font-bold uppercase tracking-wider text-[color:var(--neon-blue)] hover:border-[color:var(--neon-blue)] hover:shadow-[var(--shadow-neon-violet)] transition-all">
+            ✦ Premium
+          </Link>
         </nav>
 
         <div className="flex items-center gap-2" ref={searchRef}>
