@@ -2,7 +2,8 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { series } from "@/lib/series";
-import { Star, BookOpen, Clock } from "lucide-react";
+import { Star, BookOpen, Clock, Lock } from "lucide-react";
+import { PremiumLock, PremiumBadge, ComingSoon } from "@/components/PremiumLock";
 
 export const Route = createFileRoute("/series/$slug")({
   component: SeriesDetail,
@@ -48,14 +49,25 @@ function SeriesDetail() {
       <main className="mx-auto w-full max-w-7xl flex-1 px-4 sm:px-6 py-12">
         <h2 className="text-2xl font-black mb-4 inline-flex items-center gap-2"><BookOpen className="h-5 w-5 text-primary" /> Chapitres</h2>
         {s.chapters.length === 0 ? (
-          <p className="text-muted-foreground">Aucun chapitre disponible pour le moment.</p>
+          <div className="space-y-6">
+            <PremiumLock cover={s.cover} />
+            <ComingSoon />
+          </div>
         ) : (
-          <ul className="divide-y divide-border rounded-2xl border border-border bg-card overflow-hidden">
+          <ul className="divide-y divide-[color:var(--glass-border)] rounded-2xl border border-[color:var(--glass-border)] bg-[color:var(--glass-bg)] backdrop-blur-xl overflow-hidden">
             {s.chapters.map((c) => (
-              <li key={c.number} className="flex items-center justify-between p-4 hover:bg-muted transition">
-                <div>
-                  <div className="font-semibold">Chapitre {c.number}</div>
-                  {c.title && <div className="text-sm text-muted-foreground">{c.title}</div>}
+              <li key={c.number} className="group flex items-center justify-between p-4 hover:bg-muted/50 transition-all hover:translate-x-1">
+                <div className="flex items-center gap-3">
+                  <div className="grid h-9 w-9 place-items-center rounded-lg border border-[color:var(--glass-border)] bg-background/40 text-[color:var(--neon-blue)] group-hover:bg-[image:var(--gradient-neon)] group-hover:text-white group-hover:border-transparent transition">
+                    <Lock className="h-4 w-4" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <div className="font-semibold">Chapitre {c.number}</div>
+                      <PremiumBadge />
+                    </div>
+                    {c.title && <div className="text-sm text-muted-foreground">{c.title}</div>}
+                  </div>
                 </div>
                 <div className="text-xs text-muted-foreground inline-flex items-center gap-1"><Clock className="h-3 w-3" />{c.releasedAt}</div>
               </li>

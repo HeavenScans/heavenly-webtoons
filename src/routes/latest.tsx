@@ -1,10 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { EmptyState } from "@/components/EmptyState";
 import { series } from "@/lib/series";
 import { Link } from "@tanstack/react-router";
 import { Clock } from "lucide-react";
+import { PremiumLock, PremiumBadge, ComingSoon } from "@/components/PremiumLock";
 
 export const Route = createFileRoute("/latest")({
   head: () => ({
@@ -30,15 +30,24 @@ function LatestPage() {
           <h1 className="mt-1 text-4xl font-black">Derniers chapitres</h1>
         </div>
         {items.length === 0 ? (
-          <EmptyState title="Aucun chapitre publié" hint="Les sorties apparaîtront dès que tu ajouteras des séries et chapitres." />
+          <div className="space-y-8">
+            <PremiumLock
+              title="Chapitre Premium"
+              subtitle="Les prochains chapitres seront disponibles en avant-première pour les membres Premium."
+            />
+            <ComingSoon />
+          </div>
         ) : (
           <ul className="divide-y divide-border rounded-2xl border border-border bg-card overflow-hidden">
             {items.map(({ s, c }, i) => (
               <li key={i}>
-                <Link to="/series/$slug" params={{ slug: s.slug }} className="flex items-center gap-4 p-4 hover:bg-muted transition">
+                <Link to="/series/$slug" params={{ slug: s.slug }} className="group flex items-center gap-4 p-4 hover:bg-muted transition-all hover:translate-x-1">
                   <img src={s.cover} alt={s.title} className="h-16 w-12 rounded object-cover bg-muted" />
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-bold truncate">{s.title}</h3>
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-bold truncate">{s.title}</h3>
+                      <PremiumBadge />
+                    </div>
                     <p className="text-sm text-muted-foreground">Chapitre {c.number}{c.title ? ` — ${c.title}` : ""}</p>
                   </div>
                   <div className="text-xs text-muted-foreground inline-flex items-center gap-1"><Clock className="h-3 w-3" />{c.releasedAt}</div>
