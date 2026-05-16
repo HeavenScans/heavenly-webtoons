@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { Lock, Crown, MessageCircle, Sparkles } from "lucide-react";
+import { Lock, Crown, MessageCircle, Sparkles, Check } from "lucide-react";
+import { usePremium } from "@/hooks/usePremium";
 
 export function PremiumLock({
   title = "Chapitre Premium",
@@ -10,6 +11,24 @@ export function PremiumLock({
   subtitle?: string;
   cover?: string;
 }) {
+  const { active, hydrated } = usePremium();
+  if (hydrated && active) {
+    return (
+      <div className="relative overflow-hidden rounded-3xl border border-[color:var(--neon-blue)]/40 bg-[color:var(--glass-bg)] backdrop-blur-xl shadow-[var(--shadow-neon)] p-8 sm:p-10 text-center">
+        <div className="absolute inset-0 -z-10 [background:radial-gradient(circle_at_50%_0%,oklch(0.75_0.18_240/0.25),transparent_70%)]" />
+        <div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-[image:var(--gradient-neon)] shadow-[var(--shadow-neon-violet)]">
+          <Check className="h-7 w-7 text-white" />
+        </div>
+        <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-[color:var(--glass-border)] bg-background/60 backdrop-blur px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-[color:var(--neon-blue)]">
+          <Crown className="h-3 w-3" /> Accès Premium actif
+        </div>
+        <h3 className="mt-4 text-2xl sm:text-3xl font-black tracking-tight">Contenu débloqué</h3>
+        <p className="mt-2 max-w-md mx-auto text-sm text-muted-foreground">
+          Les prochains chapitres apparaîtront ici dès leur publication, en avant-première et sans publicité.
+        </p>
+      </div>
+    );
+  }
   return (
     <div className="relative overflow-hidden rounded-3xl border border-[color:var(--glass-border)] bg-[color:var(--glass-bg)] backdrop-blur-xl shadow-[var(--shadow-neon)]">
       {/* Blurred manga preview */}
@@ -69,6 +88,19 @@ export function PremiumLock({
 }
 
 export function PremiumBadge({ className = "" }: { className?: string }) {
+  const { active, hydrated } = usePremium();
+  if (hydrated && active) {
+    return (
+      <span
+        className={
+          "inline-flex items-center gap-1 rounded-full border border-[color:var(--neon-blue)]/40 bg-[color:var(--glass-bg)] backdrop-blur px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[color:var(--neon-blue)] " +
+          className
+        }
+      >
+        <Check className="h-3 w-3" /> Débloqué
+      </span>
+    );
+  }
   return (
     <span
       className={

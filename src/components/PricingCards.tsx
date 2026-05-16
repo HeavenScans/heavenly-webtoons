@@ -1,4 +1,5 @@
 import { Check, Crown, Zap, Star } from "lucide-react";
+import { usePremium, type PremiumTier } from "@/hooks/usePremium";
 
 const tiers = [
   {
@@ -10,6 +11,7 @@ const tiers = [
     features: ["Catalogue complet", "Lecture standard", "Support communauté"],
     cta: "Commencer",
     highlight: false,
+    tier: null as PremiumTier | null,
   },
   {
     name: "Premium",
@@ -25,6 +27,7 @@ const tiers = [
     ],
     cta: "Devenir Premium",
     highlight: true,
+    tier: "premium" as PremiumTier | null,
   },
   {
     name: "Ultimate",
@@ -40,14 +43,18 @@ const tiers = [
     ],
     cta: "Passer Ultimate",
     highlight: false,
+    tier: "ultimate" as PremiumTier | null,
   },
 ];
 
 export function PricingCards() {
+  const { active, tier, activate, deactivate, hydrated } = usePremium();
   return (
     <div className="grid gap-6 md:grid-cols-3">
       {tiers.map((t) => {
         const Icon = t.icon;
+        const isCurrent = hydrated && active && t.tier === tier;
+        const isFreeWhilePremium = hydrated && active && t.tier === null;
         return (
           <div
             key={t.name}
@@ -101,14 +108,26 @@ export function PricingCards() {
               ))}
             </ul>
             <button
+              onClick={() => {
+                if (t.tier === null) {
+                  if (active) deactivate();
+                } else {
+                  activate(t.tier);
+                }
+              }}
+              disabled={isCurrent}
               className={
-                "mt-7 w-full rounded-xl py-3 text-sm font-bold transition-all duration-300 " +
+                "mt-7 w-full rounded-xl py-3 text-sm font-bold transition-all duration-300 disabled:opacity-80 disabled:cursor-default " +
                 (t.highlight
                   ? "bg-[image:var(--gradient-neon)] text-white shadow-[var(--shadow-neon)] hover:scale-[1.02]"
                   : "border border-[color:var(--glass-border)] bg-background/40 hover:border-[color:var(--neon-violet)] hover:text-[color:var(--neon-violet)]")
               }
             >
-              {t.cta}
+              {isCurrent
+                ? "✓ Abonnement actif"
+                : isFreeWhilePremium
+                  ? "Désactiver Premium"
+                  : t.cta}
             </button>
           </div>
         );

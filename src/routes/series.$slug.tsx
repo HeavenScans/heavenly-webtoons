@@ -2,8 +2,9 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { series } from "@/lib/series";
-import { Star, BookOpen, Clock, Lock } from "lucide-react";
+import { Star, BookOpen, Clock, Lock, Play } from "lucide-react";
 import { PremiumLock, PremiumBadge, ComingSoon } from "@/components/PremiumLock";
+import { usePremium } from "@/hooks/usePremium";
 
 export const Route = createFileRoute("/series/$slug")({
   component: SeriesDetail,
@@ -21,6 +22,7 @@ function SeriesDetail() {
   const { slug } = Route.useParams();
   const s = series.find((x) => x.slug === slug);
   if (!s) throw notFound();
+  const { active: isPremium } = usePremium();
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -59,7 +61,7 @@ function SeriesDetail() {
               <li key={c.number} className="group flex items-center justify-between p-4 hover:bg-muted/50 transition-all hover:translate-x-1">
                 <div className="flex items-center gap-3">
                   <div className="grid h-9 w-9 place-items-center rounded-lg border border-[color:var(--glass-border)] bg-background/40 text-[color:var(--neon-blue)] group-hover:bg-[image:var(--gradient-neon)] group-hover:text-white group-hover:border-transparent transition">
-                    <Lock className="h-4 w-4" />
+                    {isPremium ? <Play className="h-4 w-4" /> : <Lock className="h-4 w-4" />}
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
