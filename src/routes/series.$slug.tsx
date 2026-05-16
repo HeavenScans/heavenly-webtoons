@@ -2,7 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { series } from "@/lib/series";
-import { Star, BookOpen, Clock, Lock, Play } from "lucide-react";
+import { Star, BookOpen, Clock, Lock, Play, MessageCircle, Crown } from "lucide-react";
 import { PremiumLock, PremiumBadge, ComingSoon } from "@/components/PremiumLock";
 import { usePremium } from "@/hooks/usePremium";
 
@@ -90,6 +90,35 @@ function SeriesDetail() {
               </li>
             ))}
           </ul>
+        )}
+        {!isPremium && (
+          <div className="relative mt-8 overflow-hidden rounded-3xl border border-[color:var(--glass-border)] bg-[color:var(--glass-bg)] backdrop-blur-xl p-6 sm:p-8 shadow-[var(--shadow-neon-violet)]">
+            <div className="absolute inset-0 -z-10 [background:radial-gradient(circle_at_15%_20%,oklch(0.65_0.25_295/0.25),transparent_55%),radial-gradient(circle_at_85%_80%,oklch(0.75_0.18_240/0.25),transparent_55%)]" />
+            <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-start gap-4">
+                <div className="grid h-12 w-12 flex-none place-items-center rounded-2xl bg-[image:var(--gradient-neon)] shadow-[var(--shadow-neon)]">
+                  <MessageCircle className="h-5 w-5 text-white" />
+                </div>
+                <div>
+                  <div className="inline-flex items-center gap-1.5 rounded-full border border-[color:var(--glass-border)] bg-background/50 backdrop-blur px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.18em] text-[color:var(--neon-blue)]">
+                    <Crown className="h-3 w-3" /> Communauté HeavenScans
+                  </div>
+                  <h3 className="mt-2 text-xl sm:text-2xl font-black tracking-tight">Rejoins le Discord pour les annonces & sorties</h3>
+                  <p className="mt-1 max-w-xl text-sm text-muted-foreground">
+                    Notifications de nouveaux chapitres, sondages, sneak peeks et accès à des offres Premium exclusives.
+                  </p>
+                </div>
+              </div>
+              <a
+                href="https://discord.gg/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex flex-none items-center justify-center gap-2 rounded-xl bg-[image:var(--gradient-neon)] px-5 py-3 text-sm font-bold text-white shadow-[var(--shadow-neon)] hover:scale-[1.03] transition-transform"
+              >
+                <MessageCircle className="h-4 w-4" /> Rejoindre Discord
+              </a>
+            </div>
+          </div>
         )}
       </main>
       <Footer />
