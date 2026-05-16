@@ -58,7 +58,7 @@ function SeriesDetail() {
         ) : (
           <ul className="divide-y divide-[color:var(--glass-border)] rounded-2xl border border-[color:var(--glass-border)] bg-[color:var(--glass-bg)] backdrop-blur-xl overflow-hidden">
             {s.chapters.map((c) => (
-              <li key={c.number} className="group flex items-center justify-between p-4 hover:bg-muted/50 transition-all hover:translate-x-1">
+              <li key={c.number} className="group flex items-center justify-between gap-3 p-4 hover:bg-muted/50 transition-all hover:translate-x-1">
                 <div className="flex items-center gap-3">
                   <div className="grid h-9 w-9 place-items-center rounded-lg border border-[color:var(--glass-border)] bg-background/40 text-[color:var(--neon-blue)] group-hover:bg-[image:var(--gradient-neon)] group-hover:text-white group-hover:border-transparent transition">
                     {isPremium ? <Play className="h-4 w-4" /> : <Lock className="h-4 w-4" />}
@@ -66,12 +66,27 @@ function SeriesDetail() {
                   <div>
                     <div className="flex items-center gap-2">
                       <div className="font-semibold">Chapitre {c.number}</div>
-                      <PremiumBadge />
+                      {!isPremium && <PremiumBadge />}
                     </div>
-                    {c.title && <div className="text-sm text-muted-foreground">{c.title}</div>}
+                    {c.title ? (
+                      <div className="text-sm text-muted-foreground">{c.title}</div>
+                    ) : !isPremium ? (
+                      <div className="text-sm text-muted-foreground">Chapitre Premium</div>
+                    ) : null}
                   </div>
                 </div>
-                <div className="text-xs text-muted-foreground inline-flex items-center gap-1"><Clock className="h-3 w-3" />{c.releasedAt}</div>
+                <div className="flex items-center gap-3">
+                  <div className="hidden sm:inline-flex text-xs text-muted-foreground items-center gap-1"><Clock className="h-3 w-3" />{c.releasedAt}</div>
+                  {isPremium ? (
+                    <button className="inline-flex items-center gap-1.5 rounded-lg bg-[image:var(--gradient-neon)] px-3 py-1.5 text-xs font-bold text-white shadow-[var(--shadow-neon)] hover:scale-[1.03] transition-transform">
+                      <Play className="h-3.5 w-3.5" /> Lire
+                    </button>
+                  ) : (
+                    <span className="inline-flex items-center gap-1.5 rounded-lg border border-[color:var(--glass-border)] bg-background/40 px-3 py-1.5 text-xs font-bold text-[color:var(--neon-blue)]">
+                      <Lock className="h-3.5 w-3.5" /> Chapitre Premium
+                    </span>
+                  )}
+                </div>
               </li>
             ))}
           </ul>
