@@ -1,7 +1,8 @@
 import { Link } from "@tanstack/react-router";
-import { Search, Menu, BookOpen, X, Clock, Trash2 } from "lucide-react";
+import { Search, Menu, BookOpen, X, Clock, Trash2, Crown } from "lucide-react";
 import { useState, useEffect, useRef, useMemo } from "react";
 import { series, allGenres } from "@/lib/series";
+import { usePremium } from "@/hooks/usePremium";
 
 const RECENT_KEY = "heavenscans:recent-searches";
 const MAX_RECENT = 8;
@@ -11,6 +12,7 @@ export function Header() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [recent, setRecent] = useState<string[]>([]);
+  const { active: isPremium, tier, hydrated, deactivate } = usePremium();
   const searchRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -109,9 +111,19 @@ export function Header() {
           <Link to="/series" className="text-muted-foreground hover:text-foreground transition-colors" activeProps={{ className: "text-foreground" }}>Séries</Link>
           <Link to="/genres" className="text-muted-foreground hover:text-foreground transition-colors" activeProps={{ className: "text-foreground" }}>Genres</Link>
           <Link to="/latest" className="text-muted-foreground hover:text-foreground transition-colors" activeProps={{ className: "text-foreground" }}>Derniers chapitres</Link>
-          <Link to="/premium" className="inline-flex items-center gap-1.5 rounded-full border border-[color:var(--glass-border)] bg-[color:var(--glass-bg)] backdrop-blur px-3 py-1 text-xs font-bold uppercase tracking-wider text-[color:var(--neon-blue)] hover:border-[color:var(--neon-blue)] hover:shadow-[var(--shadow-neon-violet)] transition-all">
-            ✦ Premium
-          </Link>
+          {hydrated && isPremium ? (
+            <button
+              onClick={deactivate}
+              title="Cliquer pour désactiver Premium"
+              className="inline-flex items-center gap-1.5 rounded-full border border-[color:var(--neon-blue)]/50 bg-[image:var(--gradient-neon)] px-3 py-1 text-xs font-bold uppercase tracking-wider text-white shadow-[var(--shadow-neon-violet)] hover:scale-105 transition-transform"
+            >
+              <Crown className="h-3 w-3" /> {tier === "ultimate" ? "Ultimate" : "Premium"} actif
+            </button>
+          ) : (
+            <Link to="/premium" className="inline-flex items-center gap-1.5 rounded-full border border-[color:var(--glass-border)] bg-[color:var(--glass-bg)] backdrop-blur px-3 py-1 text-xs font-bold uppercase tracking-wider text-[color:var(--neon-blue)] hover:border-[color:var(--neon-blue)] hover:shadow-[var(--shadow-neon-violet)] transition-all">
+              ✦ Premium
+            </Link>
+          )}
         </nav>
 
         <div className="flex items-center gap-2" ref={searchRef}>
