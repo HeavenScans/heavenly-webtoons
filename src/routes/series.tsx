@@ -40,7 +40,7 @@ function SeriesPage() {
 
   const update = (patch: Partial<SeriesSearch>) =>
     navigate({
-      search: (prev) => {
+      search: (prev: SeriesSearch) => {
         const next = { ...prev, ...patch } as SeriesSearch;
         (Object.keys(next) as (keyof SeriesSearch)[]).forEach((k) => {
           if (next[k] === "" || next[k] === undefined) delete next[k];
