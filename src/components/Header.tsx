@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Search, Menu, BookOpen, X, Clock, Trash2, Crown } from "lucide-react";
+import { Search, Menu, BookOpen, X, Clock, Trash2, Crown, Heart } from "lucide-react";
 import { useState, useEffect, useRef, useMemo } from "react";
 import { series, allGenres } from "@/lib/series";
 import { usePremium } from "@/hooks/usePremium";
@@ -111,6 +111,9 @@ export function Header() {
           <Link to="/series" className="text-muted-foreground hover:text-foreground transition-colors" activeProps={{ className: "text-foreground" }}>Séries</Link>
           <Link to="/genres" className="text-muted-foreground hover:text-foreground transition-colors" activeProps={{ className: "text-foreground" }}>Genres</Link>
           <Link to="/latest" className="text-muted-foreground hover:text-foreground transition-colors" activeProps={{ className: "text-foreground" }}>Derniers chapitres</Link>
+          <Link to="/library" className="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors" activeProps={{ className: "text-foreground" }}>
+            <Heart className="h-3.5 w-3.5" /> Biblio
+          </Link>
           {hydrated && isPremium ? (
             <button
               onClick={deactivate}
@@ -256,6 +259,8 @@ export function Header() {
           <Link to="/series" onClick={() => setOpen(false)}>Séries</Link>
           <Link to="/genres" onClick={() => setOpen(false)}>Genres</Link>
           <Link to="/latest" onClick={() => setOpen(false)}>Derniers chapitres</Link>
+          <Link to="/library" onClick={() => setOpen(false)}>Ma bibliothèque</Link>
+          <Link to="/premium" onClick={() => setOpen(false)}>Premium</Link>
         </nav>
       )}
     </header>

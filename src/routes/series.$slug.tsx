@@ -78,13 +78,21 @@ function SeriesDetail() {
                 <div className="flex items-center gap-3">
                   <div className="hidden sm:inline-flex text-xs text-muted-foreground items-center gap-1"><Clock className="h-3 w-3" />{c.releasedAt}</div>
                   {isPremium ? (
-                    <button className="inline-flex items-center gap-1.5 rounded-lg bg-[image:var(--gradient-neon)] px-3 py-1.5 text-xs font-bold text-white shadow-[var(--shadow-neon)] hover:scale-[1.03] transition-transform">
+                    <Link
+                      to="/series/$slug/chapter/$number"
+                      params={{ slug: s.slug, number: c.number }}
+                      className="inline-flex items-center gap-1.5 rounded-lg bg-[image:var(--gradient-neon)] px-3 py-1.5 text-xs font-bold text-white shadow-[var(--shadow-neon)] hover:scale-[1.03] transition-transform"
+                    >
                       <Play className="h-3.5 w-3.5" /> Lire
-                    </button>
+                    </Link>
                   ) : (
-                    <span className="inline-flex items-center gap-1.5 rounded-lg border border-[color:var(--glass-border)] bg-background/40 px-3 py-1.5 text-xs font-bold text-[color:var(--neon-blue)]">
+                    <Link
+                      to="/series/$slug/chapter/$number"
+                      params={{ slug: s.slug, number: c.number }}
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-[color:var(--glass-border)] bg-background/40 px-3 py-1.5 text-xs font-bold text-[color:var(--neon-blue)] hover:border-[color:var(--neon-blue)] transition"
+                    >
                       <Lock className="h-3.5 w-3.5" /> Chapitre Premium
-                    </span>
+                    </Link>
                   )}
                 </div>
               </li>

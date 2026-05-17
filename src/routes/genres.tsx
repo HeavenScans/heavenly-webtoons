@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { allGenres, series } from "@/lib/series";
@@ -26,10 +26,15 @@ function GenresPage() {
           {allGenres.map((g) => {
             const count = series.filter((s) => s.genres.includes(g)).length;
             return (
-              <div key={g} className="group rounded-xl border border-border bg-card p-5 hover:border-primary transition cursor-pointer">
+              <Link
+                key={g}
+                to="/series"
+                search={{ genre: g }}
+                className="group rounded-xl border border-border bg-card p-5 hover:border-primary transition"
+              >
                 <div className="text-lg font-bold group-hover:text-primary transition-colors">{g}</div>
                 <div className="mt-1 text-xs text-muted-foreground">{count} série{count > 1 ? "s" : ""}</div>
-              </div>
+              </Link>
             );
           })}
         </div>

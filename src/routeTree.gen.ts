@@ -11,10 +11,12 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SeriesRouteImport } from './routes/series'
 import { Route as PremiumRouteImport } from './routes/premium'
+import { Route as LibraryRouteImport } from './routes/library'
 import { Route as LatestRouteImport } from './routes/latest'
 import { Route as GenresRouteImport } from './routes/genres'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SeriesSlugRouteImport } from './routes/series.$slug'
+import { Route as SeriesSlugChapterNumberRouteImport } from './routes/series.$slug.chapter.$number'
 
 const SeriesRoute = SeriesRouteImport.update({
   id: '/series',
@@ -24,6 +26,11 @@ const SeriesRoute = SeriesRouteImport.update({
 const PremiumRoute = PremiumRouteImport.update({
   id: '/premium',
   path: '/premium',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LibraryRoute = LibraryRouteImport.update({
+  id: '/library',
+  path: '/library',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LatestRoute = LatestRouteImport.update({
@@ -46,31 +53,42 @@ const SeriesSlugRoute = SeriesSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => SeriesRoute,
 } as any)
+const SeriesSlugChapterNumberRoute = SeriesSlugChapterNumberRouteImport.update({
+  id: '/chapter/$number',
+  path: '/chapter/$number',
+  getParentRoute: () => SeriesSlugRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/genres': typeof GenresRoute
   '/latest': typeof LatestRoute
+  '/library': typeof LibraryRoute
   '/premium': typeof PremiumRoute
   '/series': typeof SeriesRouteWithChildren
-  '/series/$slug': typeof SeriesSlugRoute
+  '/series/$slug': typeof SeriesSlugRouteWithChildren
+  '/series/$slug/chapter/$number': typeof SeriesSlugChapterNumberRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/genres': typeof GenresRoute
   '/latest': typeof LatestRoute
+  '/library': typeof LibraryRoute
   '/premium': typeof PremiumRoute
   '/series': typeof SeriesRouteWithChildren
-  '/series/$slug': typeof SeriesSlugRoute
+  '/series/$slug': typeof SeriesSlugRouteWithChildren
+  '/series/$slug/chapter/$number': typeof SeriesSlugChapterNumberRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/genres': typeof GenresRoute
   '/latest': typeof LatestRoute
+  '/library': typeof LibraryRoute
   '/premium': typeof PremiumRoute
   '/series': typeof SeriesRouteWithChildren
-  '/series/$slug': typeof SeriesSlugRoute
+  '/series/$slug': typeof SeriesSlugRouteWithChildren
+  '/series/$slug/chapter/$number': typeof SeriesSlugChapterNumberRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -78,25 +96,38 @@ export interface FileRouteTypes {
     | '/'
     | '/genres'
     | '/latest'
+    | '/library'
     | '/premium'
     | '/series'
     | '/series/$slug'
+    | '/series/$slug/chapter/$number'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/genres' | '/latest' | '/premium' | '/series' | '/series/$slug'
+  to:
+    | '/'
+    | '/genres'
+    | '/latest'
+    | '/library'
+    | '/premium'
+    | '/series'
+    | '/series/$slug'
+    | '/series/$slug/chapter/$number'
   id:
     | '__root__'
     | '/'
     | '/genres'
     | '/latest'
+    | '/library'
     | '/premium'
     | '/series'
     | '/series/$slug'
+    | '/series/$slug/chapter/$number'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   GenresRoute: typeof GenresRoute
   LatestRoute: typeof LatestRoute
+  LibraryRoute: typeof LibraryRoute
   PremiumRoute: typeof PremiumRoute
   SeriesRoute: typeof SeriesRouteWithChildren
 }
@@ -115,6 +146,13 @@ declare module '@tanstack/react-router' {
       path: '/premium'
       fullPath: '/premium'
       preLoaderRoute: typeof PremiumRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/library': {
+      id: '/library'
+      path: '/library'
+      fullPath: '/library'
+      preLoaderRoute: typeof LibraryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/latest': {
@@ -145,15 +183,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SeriesSlugRouteImport
       parentRoute: typeof SeriesRoute
     }
+    '/series/$slug/chapter/$number': {
+      id: '/series/$slug/chapter/$number'
+      path: '/chapter/$number'
+      fullPath: '/series/$slug/chapter/$number'
+      preLoaderRoute: typeof SeriesSlugChapterNumberRouteImport
+      parentRoute: typeof SeriesSlugRoute
+    }
   }
 }
 
+interface SeriesSlugRouteChildren {
+  SeriesSlugChapterNumberRoute: typeof SeriesSlugChapterNumberRoute
+}
+
+const SeriesSlugRouteChildren: SeriesSlugRouteChildren = {
+  SeriesSlugChapterNumberRoute: SeriesSlugChapterNumberRoute,
+}
+
+const SeriesSlugRouteWithChildren = SeriesSlugRoute._addFileChildren(
+  SeriesSlugRouteChildren,
+)
+
 interface SeriesRouteChildren {
-  SeriesSlugRoute: typeof SeriesSlugRoute
+  SeriesSlugRoute: typeof SeriesSlugRouteWithChildren
 }
 
 const SeriesRouteChildren: SeriesRouteChildren = {
-  SeriesSlugRoute: SeriesSlugRoute,
+  SeriesSlugRoute: SeriesSlugRouteWithChildren,
 }
 
 const SeriesRouteWithChildren =
@@ -163,19 +220,10 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   GenresRoute: GenresRoute,
   LatestRoute: LatestRoute,
+  LibraryRoute: LibraryRoute,
   PremiumRoute: PremiumRoute,
   SeriesRoute: SeriesRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
