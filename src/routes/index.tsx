@@ -6,6 +6,7 @@ import { EmptyState } from "@/components/EmptyState";
 import { series, allGenres } from "@/lib/series";
 import { Flame, Sparkles, TrendingUp, ArrowRight, Crown, Zap, ShieldOff, BookOpen } from "lucide-react";
 import { Link } from "@tanstack/react-router";
+import { ScrollToTop } from "@/components/ScrollToTop";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -145,6 +146,7 @@ function Index() {
       </main>
 
       <Footer />
+      <ScrollToTop />
     </div>
   );
 }
