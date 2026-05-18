@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SeriesRouteImport } from './routes/series'
+import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PremiumRouteImport } from './routes/premium'
 import { Route as LibraryRouteImport } from './routes/library'
@@ -33,6 +34,11 @@ const TermsRoute = TermsRouteImport.update({
 const SeriesRoute = SeriesRouteImport.update({
   id: '/series',
   path: '/series',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyRoute = PrivacyRouteImport.update({
@@ -113,6 +119,7 @@ export interface FileRoutesByFullPath {
   '/library': typeof LibraryRoute
   '/premium': typeof PremiumRoute
   '/privacy': typeof PrivacyRoute
+  '/profile': typeof ProfileRoute
   '/series': typeof SeriesRouteWithChildren
   '/terms': typeof TermsRoute
   '/series/$slug': typeof SeriesSlugRouteWithChildren
@@ -130,6 +137,7 @@ export interface FileRoutesByTo {
   '/library': typeof LibraryRoute
   '/premium': typeof PremiumRoute
   '/privacy': typeof PrivacyRoute
+  '/profile': typeof ProfileRoute
   '/series': typeof SeriesRouteWithChildren
   '/terms': typeof TermsRoute
   '/series/$slug': typeof SeriesSlugRouteWithChildren
@@ -148,6 +156,7 @@ export interface FileRoutesById {
   '/library': typeof LibraryRoute
   '/premium': typeof PremiumRoute
   '/privacy': typeof PrivacyRoute
+  '/profile': typeof ProfileRoute
   '/series': typeof SeriesRouteWithChildren
   '/terms': typeof TermsRoute
   '/series/$slug': typeof SeriesSlugRouteWithChildren
@@ -167,6 +176,7 @@ export interface FileRouteTypes {
     | '/library'
     | '/premium'
     | '/privacy'
+    | '/profile'
     | '/series'
     | '/terms'
     | '/series/$slug'
@@ -184,6 +194,7 @@ export interface FileRouteTypes {
     | '/library'
     | '/premium'
     | '/privacy'
+    | '/profile'
     | '/series'
     | '/terms'
     | '/series/$slug'
@@ -201,6 +212,7 @@ export interface FileRouteTypes {
     | '/library'
     | '/premium'
     | '/privacy'
+    | '/profile'
     | '/series'
     | '/terms'
     | '/series/$slug'
@@ -219,6 +231,7 @@ export interface RootRouteChildren {
   LibraryRoute: typeof LibraryRoute
   PremiumRoute: typeof PremiumRoute
   PrivacyRoute: typeof PrivacyRoute
+  ProfileRoute: typeof ProfileRoute
   SeriesRoute: typeof SeriesRouteWithChildren
   TermsRoute: typeof TermsRoute
 }
@@ -237,6 +250,13 @@ declare module '@tanstack/react-router' {
       path: '/series'
       fullPath: '/series'
       preLoaderRoute: typeof SeriesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy': {
@@ -368,6 +388,7 @@ const rootRouteChildren: RootRouteChildren = {
   LibraryRoute: LibraryRoute,
   PremiumRoute: PremiumRoute,
   PrivacyRoute: PrivacyRoute,
+  ProfileRoute: ProfileRoute,
   SeriesRoute: SeriesRouteWithChildren,
   TermsRoute: TermsRoute,
 }
