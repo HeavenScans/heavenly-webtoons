@@ -9,18 +9,34 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SeriesRouteImport } from './routes/series'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PremiumRouteImport } from './routes/premium'
 import { Route as LibraryRouteImport } from './routes/library'
 import { Route as LatestRouteImport } from './routes/latest'
 import { Route as GenresRouteImport } from './routes/genres'
+import { Route as FaqRouteImport } from './routes/faq'
+import { Route as DmcaRouteImport } from './routes/dmca'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SeriesSlugRouteImport } from './routes/series.$slug'
 import { Route as SeriesSlugChapterNumberRouteImport } from './routes/series.$slug.chapter.$number'
 
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SeriesRoute = SeriesRouteImport.update({
   id: '/series',
   path: '/series',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PremiumRoute = PremiumRouteImport.update({
@@ -43,6 +59,26 @@ const GenresRoute = GenresRouteImport.update({
   path: '/genres',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DmcaRoute = DmcaRouteImport.update({
+  id: '/dmca',
+  path: '/dmca',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -61,32 +97,50 @@ const SeriesSlugChapterNumberRoute = SeriesSlugChapterNumberRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/contact': typeof ContactRoute
+  '/dmca': typeof DmcaRoute
+  '/faq': typeof FaqRoute
   '/genres': typeof GenresRoute
   '/latest': typeof LatestRoute
   '/library': typeof LibraryRoute
   '/premium': typeof PremiumRoute
+  '/privacy': typeof PrivacyRoute
   '/series': typeof SeriesRouteWithChildren
+  '/terms': typeof TermsRoute
   '/series/$slug': typeof SeriesSlugRouteWithChildren
   '/series/$slug/chapter/$number': typeof SeriesSlugChapterNumberRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/contact': typeof ContactRoute
+  '/dmca': typeof DmcaRoute
+  '/faq': typeof FaqRoute
   '/genres': typeof GenresRoute
   '/latest': typeof LatestRoute
   '/library': typeof LibraryRoute
   '/premium': typeof PremiumRoute
+  '/privacy': typeof PrivacyRoute
   '/series': typeof SeriesRouteWithChildren
+  '/terms': typeof TermsRoute
   '/series/$slug': typeof SeriesSlugRouteWithChildren
   '/series/$slug/chapter/$number': typeof SeriesSlugChapterNumberRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/contact': typeof ContactRoute
+  '/dmca': typeof DmcaRoute
+  '/faq': typeof FaqRoute
   '/genres': typeof GenresRoute
   '/latest': typeof LatestRoute
   '/library': typeof LibraryRoute
   '/premium': typeof PremiumRoute
+  '/privacy': typeof PrivacyRoute
   '/series': typeof SeriesRouteWithChildren
+  '/terms': typeof TermsRoute
   '/series/$slug': typeof SeriesSlugRouteWithChildren
   '/series/$slug/chapter/$number': typeof SeriesSlugChapterNumberRoute
 }
@@ -94,51 +148,89 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/about'
+    | '/contact'
+    | '/dmca'
+    | '/faq'
     | '/genres'
     | '/latest'
     | '/library'
     | '/premium'
+    | '/privacy'
     | '/series'
+    | '/terms'
     | '/series/$slug'
     | '/series/$slug/chapter/$number'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/about'
+    | '/contact'
+    | '/dmca'
+    | '/faq'
     | '/genres'
     | '/latest'
     | '/library'
     | '/premium'
+    | '/privacy'
     | '/series'
+    | '/terms'
     | '/series/$slug'
     | '/series/$slug/chapter/$number'
   id:
     | '__root__'
     | '/'
+    | '/about'
+    | '/contact'
+    | '/dmca'
+    | '/faq'
     | '/genres'
     | '/latest'
     | '/library'
     | '/premium'
+    | '/privacy'
     | '/series'
+    | '/terms'
     | '/series/$slug'
     | '/series/$slug/chapter/$number'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
+  ContactRoute: typeof ContactRoute
+  DmcaRoute: typeof DmcaRoute
+  FaqRoute: typeof FaqRoute
   GenresRoute: typeof GenresRoute
   LatestRoute: typeof LatestRoute
   LibraryRoute: typeof LibraryRoute
   PremiumRoute: typeof PremiumRoute
+  PrivacyRoute: typeof PrivacyRoute
   SeriesRoute: typeof SeriesRouteWithChildren
+  TermsRoute: typeof TermsRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/series': {
       id: '/series'
       path: '/series'
       fullPath: '/series'
       preLoaderRoute: typeof SeriesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/premium': {
@@ -167,6 +259,34 @@ declare module '@tanstack/react-router' {
       path: '/genres'
       fullPath: '/genres'
       preLoaderRoute: typeof GenresRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dmca': {
+      id: '/dmca'
+      path: '/dmca'
+      fullPath: '/dmca'
+      preLoaderRoute: typeof DmcaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -218,11 +338,17 @@ const SeriesRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
+  ContactRoute: ContactRoute,
+  DmcaRoute: DmcaRoute,
+  FaqRoute: FaqRoute,
   GenresRoute: GenresRoute,
   LatestRoute: LatestRoute,
   LibraryRoute: LibraryRoute,
   PremiumRoute: PremiumRoute,
+  PrivacyRoute: PrivacyRoute,
   SeriesRoute: SeriesRouteWithChildren,
+  TermsRoute: TermsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
