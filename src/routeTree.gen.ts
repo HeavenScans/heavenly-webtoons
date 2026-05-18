@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SeriesRouteImport } from './routes/series'
+import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PremiumRouteImport } from './routes/premium'
 import { Route as LibraryRouteImport } from './routes/library'
@@ -19,6 +20,7 @@ import { Route as GenresRouteImport } from './routes/genres'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as DmcaRouteImport } from './routes/dmca'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SeriesSlugRouteImport } from './routes/series.$slug'
@@ -32,6 +34,11 @@ const TermsRoute = TermsRouteImport.update({
 const SeriesRoute = SeriesRouteImport.update({
   id: '/series',
   path: '/series',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyRoute = PrivacyRouteImport.update({
@@ -74,6 +81,11 @@ const ContactRoute = ContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
@@ -98,6 +110,7 @@ const SeriesSlugChapterNumberRoute = SeriesSlugChapterNumberRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/dmca': typeof DmcaRoute
   '/faq': typeof FaqRoute
@@ -106,6 +119,7 @@ export interface FileRoutesByFullPath {
   '/library': typeof LibraryRoute
   '/premium': typeof PremiumRoute
   '/privacy': typeof PrivacyRoute
+  '/profile': typeof ProfileRoute
   '/series': typeof SeriesRouteWithChildren
   '/terms': typeof TermsRoute
   '/series/$slug': typeof SeriesSlugRouteWithChildren
@@ -114,6 +128,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/dmca': typeof DmcaRoute
   '/faq': typeof FaqRoute
@@ -122,6 +137,7 @@ export interface FileRoutesByTo {
   '/library': typeof LibraryRoute
   '/premium': typeof PremiumRoute
   '/privacy': typeof PrivacyRoute
+  '/profile': typeof ProfileRoute
   '/series': typeof SeriesRouteWithChildren
   '/terms': typeof TermsRoute
   '/series/$slug': typeof SeriesSlugRouteWithChildren
@@ -131,6 +147,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/dmca': typeof DmcaRoute
   '/faq': typeof FaqRoute
@@ -139,6 +156,7 @@ export interface FileRoutesById {
   '/library': typeof LibraryRoute
   '/premium': typeof PremiumRoute
   '/privacy': typeof PrivacyRoute
+  '/profile': typeof ProfileRoute
   '/series': typeof SeriesRouteWithChildren
   '/terms': typeof TermsRoute
   '/series/$slug': typeof SeriesSlugRouteWithChildren
@@ -149,6 +167,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/auth'
     | '/contact'
     | '/dmca'
     | '/faq'
@@ -157,6 +176,7 @@ export interface FileRouteTypes {
     | '/library'
     | '/premium'
     | '/privacy'
+    | '/profile'
     | '/series'
     | '/terms'
     | '/series/$slug'
@@ -165,6 +185,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/auth'
     | '/contact'
     | '/dmca'
     | '/faq'
@@ -173,6 +194,7 @@ export interface FileRouteTypes {
     | '/library'
     | '/premium'
     | '/privacy'
+    | '/profile'
     | '/series'
     | '/terms'
     | '/series/$slug'
@@ -181,6 +203,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
+    | '/auth'
     | '/contact'
     | '/dmca'
     | '/faq'
@@ -189,6 +212,7 @@ export interface FileRouteTypes {
     | '/library'
     | '/premium'
     | '/privacy'
+    | '/profile'
     | '/series'
     | '/terms'
     | '/series/$slug'
@@ -198,6 +222,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AuthRoute: typeof AuthRoute
   ContactRoute: typeof ContactRoute
   DmcaRoute: typeof DmcaRoute
   FaqRoute: typeof FaqRoute
@@ -206,6 +231,7 @@ export interface RootRouteChildren {
   LibraryRoute: typeof LibraryRoute
   PremiumRoute: typeof PremiumRoute
   PrivacyRoute: typeof PrivacyRoute
+  ProfileRoute: typeof ProfileRoute
   SeriesRoute: typeof SeriesRouteWithChildren
   TermsRoute: typeof TermsRoute
 }
@@ -224,6 +250,13 @@ declare module '@tanstack/react-router' {
       path: '/series'
       fullPath: '/series'
       preLoaderRoute: typeof SeriesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy': {
@@ -280,6 +313,13 @@ declare module '@tanstack/react-router' {
       path: '/contact'
       fullPath: '/contact'
       preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -339,6 +379,7 @@ const SeriesRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AuthRoute: AuthRoute,
   ContactRoute: ContactRoute,
   DmcaRoute: DmcaRoute,
   FaqRoute: FaqRoute,
@@ -347,6 +388,7 @@ const rootRouteChildren: RootRouteChildren = {
   LibraryRoute: LibraryRoute,
   PremiumRoute: PremiumRoute,
   PrivacyRoute: PrivacyRoute,
+  ProfileRoute: ProfileRoute,
   SeriesRoute: SeriesRouteWithChildren,
   TermsRoute: TermsRoute,
 }

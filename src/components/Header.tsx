@@ -1,8 +1,9 @@
 import { Link } from "@tanstack/react-router";
-import { Search, Menu, BookOpen, X, Clock, Trash2, Crown, Heart } from "lucide-react";
+import { Search, Menu, BookOpen, X, Clock, Trash2, Crown, Heart, User as UserIcon, LogIn } from "lucide-react";
 import { useState, useEffect, useRef, useMemo } from "react";
 import { series, allGenres } from "@/lib/series";
 import { usePremium } from "@/hooks/usePremium";
+import { useAuth } from "@/hooks/useAuth";
 
 const RECENT_KEY = "heavenscans:recent-searches";
 const MAX_RECENT = 8;
@@ -13,6 +14,7 @@ export function Header() {
   const [query, setQuery] = useState("");
   const [recent, setRecent] = useState<string[]>([]);
   const { active: isPremium, tier, hydrated, deactivate } = usePremium();
+  const { user, loading: authLoading } = useAuth();
   const searchRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -127,6 +129,18 @@ export function Header() {
               ✦ Premium
             </Link>
           )}
+          {!authLoading && (user ? (
+            <Link to="/profile" className="inline-flex items-center gap-1.5 rounded-lg bg-secondary px-2.5 py-1.5 text-xs font-bold hover:bg-muted transition-colors" title="Mon profil">
+              <span className="grid h-5 w-5 place-items-center rounded-md bg-[image:var(--gradient-hero)] text-[10px] font-black text-primary-foreground">
+                {(user.email ?? "?").charAt(0).toUpperCase()}
+              </span>
+              Profil
+            </Link>
+          ) : (
+            <Link to="/auth" className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5 text-xs font-bold hover:border-primary hover:text-primary transition-colors">
+              <LogIn className="h-3 w-3" /> Connexion
+            </Link>
+          ))}
         </nav>
 
         <div className="flex items-center gap-2" ref={searchRef}>
@@ -261,6 +275,11 @@ export function Header() {
           <Link to="/latest" onClick={() => setOpen(false)}>Derniers chapitres</Link>
           <Link to="/library" onClick={() => setOpen(false)}>Ma bibliothèque</Link>
           <Link to="/premium" onClick={() => setOpen(false)}>Premium</Link>
+          {user ? (
+            <Link to="/profile" onClick={() => setOpen(false)} className="inline-flex items-center gap-1.5"><UserIcon className="h-4 w-4" /> Mon profil</Link>
+          ) : (
+            <Link to="/auth" onClick={() => setOpen(false)} className="inline-flex items-center gap-1.5 text-primary"><LogIn className="h-4 w-4" /> Connexion / Inscription</Link>
+          )}
         </nav>
       )}
     </header>
