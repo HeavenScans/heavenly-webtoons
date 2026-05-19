@@ -14,6 +14,77 @@ export type Database = {
   }
   public: {
     Tables: {
+      chapters: {
+        Row: {
+          created_at: string
+          id: string
+          is_premium: boolean
+          number: string
+          pages: string[]
+          published: boolean
+          released_at: string
+          series_id: string
+          title: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_premium?: boolean
+          number: string
+          pages?: string[]
+          published?: boolean
+          released_at?: string
+          series_id: string
+          title?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_premium?: boolean
+          number?: string
+          pages?: string[]
+          published?: boolean
+          released_at?: string
+          series_id?: string
+          title?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chapters_series_id_fkey"
+            columns: ["series_id"]
+            isOneToOne: false
+            referencedRelation: "series"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      comments: {
+        Row: {
+          body: string
+          chapter_number: string | null
+          created_at: string
+          id: string
+          series_slug: string
+          user_id: string
+        }
+        Insert: {
+          body: string
+          chapter_number?: string | null
+          created_at?: string
+          id?: string
+          series_slug: string
+          user_id: string
+        }
+        Update: {
+          body?: string
+          chapter_number?: string | null
+          created_at?: string
+          id?: string
+          series_slug?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       favorites: {
         Row: {
           created_at: string
@@ -68,15 +139,135 @@ export type Database = {
         }
         Relationships: []
       }
+      ratings: {
+        Row: {
+          created_at: string
+          series_slug: string
+          stars: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          series_slug: string
+          stars: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          series_slug?: string
+          stars?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      reading_history: {
+        Row: {
+          chapter_number: string
+          page: number
+          series_slug: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          chapter_number: string
+          page?: number
+          series_slug: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          chapter_number?: string
+          page?: number
+          series_slug?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      series: {
+        Row: {
+          cover_url: string | null
+          created_at: string
+          genres: string[]
+          id: string
+          is_premium: boolean
+          published: boolean
+          rating: number | null
+          slug: string
+          status: string
+          synopsis: string
+          title: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          cover_url?: string | null
+          created_at?: string
+          genres?: string[]
+          id?: string
+          is_premium?: boolean
+          published?: boolean
+          rating?: number | null
+          slug: string
+          status?: string
+          synopsis?: string
+          title: string
+          type?: string
+          updated_at?: string
+        }
+        Update: {
+          cover_url?: string | null
+          created_at?: string
+          genres?: string[]
+          id?: string
+          is_premium?: boolean
+          published?: boolean
+          rating?: number | null
+          slug?: string
+          status?: string
+          synopsis?: string
+          title?: string
+          type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "team" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -203,6 +394,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "team", "user"],
+    },
   },
 } as const

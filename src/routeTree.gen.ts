@@ -21,9 +21,11 @@ import { Route as FaqRouteImport } from './routes/faq'
 import { Route as DmcaRouteImport } from './routes/dmca'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SeriesSlugRouteImport } from './routes/series.$slug'
+import { Route as ApiSitemapDotxmlRouteImport } from './routes/api/sitemap[.]xml'
 import { Route as SeriesSlugChapterNumberRouteImport } from './routes/series.$slug.chapter.$number'
 
 const TermsRoute = TermsRouteImport.update({
@@ -86,6 +88,11 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
@@ -101,6 +108,11 @@ const SeriesSlugRoute = SeriesSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => SeriesRoute,
 } as any)
+const ApiSitemapDotxmlRoute = ApiSitemapDotxmlRouteImport.update({
+  id: '/api/sitemap.xml',
+  path: '/api/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SeriesSlugChapterNumberRoute = SeriesSlugChapterNumberRouteImport.update({
   id: '/chapter/$number',
   path: '/chapter/$number',
@@ -110,6 +122,7 @@ const SeriesSlugChapterNumberRoute = SeriesSlugChapterNumberRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/dmca': typeof DmcaRoute
@@ -122,12 +135,14 @@ export interface FileRoutesByFullPath {
   '/profile': typeof ProfileRoute
   '/series': typeof SeriesRouteWithChildren
   '/terms': typeof TermsRoute
+  '/api/sitemap.xml': typeof ApiSitemapDotxmlRoute
   '/series/$slug': typeof SeriesSlugRouteWithChildren
   '/series/$slug/chapter/$number': typeof SeriesSlugChapterNumberRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/dmca': typeof DmcaRoute
@@ -140,6 +155,7 @@ export interface FileRoutesByTo {
   '/profile': typeof ProfileRoute
   '/series': typeof SeriesRouteWithChildren
   '/terms': typeof TermsRoute
+  '/api/sitemap.xml': typeof ApiSitemapDotxmlRoute
   '/series/$slug': typeof SeriesSlugRouteWithChildren
   '/series/$slug/chapter/$number': typeof SeriesSlugChapterNumberRoute
 }
@@ -147,6 +163,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/dmca': typeof DmcaRoute
@@ -159,6 +176,7 @@ export interface FileRoutesById {
   '/profile': typeof ProfileRoute
   '/series': typeof SeriesRouteWithChildren
   '/terms': typeof TermsRoute
+  '/api/sitemap.xml': typeof ApiSitemapDotxmlRoute
   '/series/$slug': typeof SeriesSlugRouteWithChildren
   '/series/$slug/chapter/$number': typeof SeriesSlugChapterNumberRoute
 }
@@ -167,6 +185,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/admin'
     | '/auth'
     | '/contact'
     | '/dmca'
@@ -179,12 +198,14 @@ export interface FileRouteTypes {
     | '/profile'
     | '/series'
     | '/terms'
+    | '/api/sitemap.xml'
     | '/series/$slug'
     | '/series/$slug/chapter/$number'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
+    | '/admin'
     | '/auth'
     | '/contact'
     | '/dmca'
@@ -197,12 +218,14 @@ export interface FileRouteTypes {
     | '/profile'
     | '/series'
     | '/terms'
+    | '/api/sitemap.xml'
     | '/series/$slug'
     | '/series/$slug/chapter/$number'
   id:
     | '__root__'
     | '/'
     | '/about'
+    | '/admin'
     | '/auth'
     | '/contact'
     | '/dmca'
@@ -215,6 +238,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/series'
     | '/terms'
+    | '/api/sitemap.xml'
     | '/series/$slug'
     | '/series/$slug/chapter/$number'
   fileRoutesById: FileRoutesById
@@ -222,6 +246,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AdminRoute: typeof AdminRoute
   AuthRoute: typeof AuthRoute
   ContactRoute: typeof ContactRoute
   DmcaRoute: typeof DmcaRoute
@@ -234,6 +259,7 @@ export interface RootRouteChildren {
   ProfileRoute: typeof ProfileRoute
   SeriesRoute: typeof SeriesRouteWithChildren
   TermsRoute: typeof TermsRoute
+  ApiSitemapDotxmlRoute: typeof ApiSitemapDotxmlRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -322,6 +348,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/about': {
       id: '/about'
       path: '/about'
@@ -342,6 +375,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/series/$slug'
       preLoaderRoute: typeof SeriesSlugRouteImport
       parentRoute: typeof SeriesRoute
+    }
+    '/api/sitemap.xml': {
+      id: '/api/sitemap.xml'
+      path: '/api/sitemap.xml'
+      fullPath: '/api/sitemap.xml'
+      preLoaderRoute: typeof ApiSitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/series/$slug/chapter/$number': {
       id: '/series/$slug/chapter/$number'
@@ -379,6 +419,7 @@ const SeriesRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AdminRoute: AdminRoute,
   AuthRoute: AuthRoute,
   ContactRoute: ContactRoute,
   DmcaRoute: DmcaRoute,
@@ -391,17 +432,8 @@ const rootRouteChildren: RootRouteChildren = {
   ProfileRoute: ProfileRoute,
   SeriesRoute: SeriesRouteWithChildren,
   TermsRoute: TermsRoute,
+  ApiSitemapDotxmlRoute: ApiSitemapDotxmlRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

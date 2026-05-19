@@ -4,6 +4,9 @@ import { Footer } from "@/components/Footer";
 import { series } from "@/lib/series";
 import { ChevronLeft, ChevronRight, ArrowLeft, Lock, Crown, List } from "lucide-react";
 import { usePremium } from "@/hooks/usePremium";
+import { useReadingHistory } from "@/hooks/useReadingHistory";
+import { useDbSeries } from "@/hooks/useDbSeries";
+import { useEffect } from "react";
 
 export const Route = createFileRoute("/series/$slug/chapter/$number")({
   component: ChapterReader,
@@ -19,8 +22,14 @@ export const Route = createFileRoute("/series/$slug/chapter/$number")({
 
 function ChapterReader() {
   const { slug, number } = Route.useParams();
-  const s = series.find((x) => x.slug === slug);
-  if (!s) throw notFound();
+  const { series: db, loading } = useDbSeries();
+  const s = series.find((x) => x.slug === slug) ?? db.find((x) => x.slug === slug);
+  const { record } = useReadingHistory();
+  useEffect(() => {
+    if (s) record(slug, number, 1);
+  }, [slug, number, s, record]);
+  if (!s && !loading) throw notFound();
+  if (!s) return <div className="min-h-screen grid place-items-center text-muted-foreground">Chargement…</div>;
   const idx = s.chapters.findIndex((c) => c.number === number);
   if (idx === -1) throw notFound();
   const chapter = s.chapters[idx];
