@@ -5,6 +5,9 @@ import { series } from "@/lib/series";
 import { Star, BookOpen, Clock, Lock, Play, MessageCircle, Crown } from "lucide-react";
 import { PremiumLock, PremiumBadge, ComingSoon } from "@/components/PremiumLock";
 import { usePremium } from "@/hooks/usePremium";
+import { useDbSeries } from "@/hooks/useDbSeries";
+import { Comments } from "@/components/Comments";
+import { RatingStars } from "@/components/RatingStars";
 
 export const Route = createFileRoute("/series/$slug")({
   component: SeriesDetail,
@@ -20,8 +23,10 @@ export const Route = createFileRoute("/series/$slug")({
 
 function SeriesDetail() {
   const { slug } = Route.useParams();
-  const s = series.find((x) => x.slug === slug);
-  if (!s) throw notFound();
+  const { series: dbSeries, loading } = useDbSeries();
+  const s = series.find((x) => x.slug === slug) ?? dbSeries.find((x) => x.slug === slug);
+  if (!s && !loading) throw notFound();
+  if (!s) return <div className="min-h-screen grid place-items-center text-muted-foreground">Chargement…</div>;
   const { active: isPremium } = usePremium();
 
   return (
@@ -45,6 +50,7 @@ function SeriesDetail() {
               {s.genres.map((g) => <span key={g} className="rounded-full border border-border bg-card/50 px-3 py-1 text-xs">{g}</span>)}
             </div>
             <p className="mt-5 max-w-3xl text-muted-foreground">{s.synopsis}</p>
+            <div className="mt-5"><RatingStars slug={s.slug} /></div>
           </div>
         </div>
       </div>
@@ -128,6 +134,7 @@ function SeriesDetail() {
             </div>
           </div>
         )}
+        <Comments slug={s.slug} />
       </main>
       <Footer />
     </div>

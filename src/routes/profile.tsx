@@ -4,9 +4,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useFavorites } from "@/hooks/useFavorites";
 import { usePremium } from "@/hooks/usePremium";
+import { useRole } from "@/hooks/useRole";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { Crown, Heart, LogOut, Loader2, Save, User as UserIcon } from "lucide-react";
+import { Crown, Heart, LogOut, Loader2, Save, User as UserIcon, Upload, ShieldCheck } from "lucide-react";
+import { supabase as sb } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/profile")({
   head: () => ({
@@ -23,8 +25,11 @@ function ProfilePage() {
   const { user, loading, signOut } = useAuth();
   const { list: favorites } = useFavorites();
   const { active: isPremium, tier } = usePremium();
+  const { isTeam } = useRole();
   const [displayName, setDisplayName] = useState("");
   const [username, setUsername] = useState("");
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [saving, setSaving] = useState(false);
   const [savedAt, setSavedAt] = useState<number | null>(null);
   const [profileLoaded, setProfileLoaded] = useState(false);
@@ -37,12 +42,13 @@ function ProfilePage() {
     if (!user) return;
     supabase
       .from("profiles")
-      .select("display_name, username")
+      .select("display_name, username, avatar_url")
       .eq("id", user.id)
       .maybeSingle()
       .then(({ data }) => {
         setDisplayName(data?.display_name ?? "");
         setUsername(data?.username ?? "");
+        setAvatarUrl(data?.avatar_url ?? null);
         setProfileLoaded(true);
       });
   }, [user]);
@@ -56,10 +62,23 @@ function ProfilePage() {
       .update({
         display_name: displayName.trim() || null,
         username: username.trim() || null,
+        avatar_url: avatarUrl,
       })
       .eq("id", user.id);
     setSaving(false);
     if (!error) setSavedAt(Date.now());
+  };
+
+  const uploadAvatar = async (file: File) => {
+    if (!user) return;
+    setUploadingAvatar(true);
+    const path = `${user.id}/${Date.now()}-${file.name}`;
+    const { error } = await sb.storage.from("avatars").upload(path, file, { upsert: true });
+    if (error) { alert(error.message); setUploadingAvatar(false); return; }
+    const { data: pub } = sb.storage.from("avatars").getPublicUrl(path);
+    setAvatarUrl(pub.publicUrl);
+    await sb.from("profiles").update({ avatar_url: pub.publicUrl }).eq("id", user.id);
+    setUploadingAvatar(false);
   };
 
   if (loading || !user) {
@@ -75,19 +94,36 @@ function ProfilePage() {
       <Header />
       <main className="mx-auto w-full max-w-3xl flex-1 px-4 sm:px-6 py-12 space-y-8">
         <div className="flex items-center gap-4">
-          <div className="grid h-16 w-16 place-items-center rounded-2xl bg-[image:var(--gradient-hero)] text-2xl font-black text-primary-foreground shadow-[var(--shadow-glow)]">
-            {(displayName || user.email || "?").charAt(0).toUpperCase()}
-          </div>
+          <label className="relative h-16 w-16 cursor-pointer overflow-hidden rounded-2xl shadow-[var(--shadow-glow)]">
+            {avatarUrl ? (
+              <img src={avatarUrl} alt="" className="h-full w-full object-cover" />
+            ) : (
+              <div className="grid h-full w-full place-items-center bg-[image:var(--gradient-hero)] text-2xl font-black text-primary-foreground">
+                {(displayName || user.email || "?").charAt(0).toUpperCase()}
+              </div>
+            )}
+            <div className="absolute inset-0 grid place-items-center bg-black/50 opacity-0 hover:opacity-100 transition">
+              {uploadingAvatar ? <Loader2 className="h-5 w-5 animate-spin text-white" /> : <Upload className="h-5 w-5 text-white" />}
+            </div>
+            <input type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && uploadAvatar(e.target.files[0])} />
+          </label>
           <div className="min-w-0">
             <h1 className="text-3xl font-black truncate">{displayName || user.email}</h1>
             <p className="text-sm text-muted-foreground truncate">{user.email}</p>
           </div>
+          <div className="ml-auto flex items-center gap-2">
+          {isTeam && (
+            <Link to="/admin" className="inline-flex items-center gap-1.5 rounded-lg border border-[color:var(--neon-blue)]/50 bg-[image:var(--gradient-neon)] px-3 py-2 text-sm font-semibold text-white shadow-[var(--shadow-neon)]">
+              <ShieldCheck className="h-4 w-4" /> Admin
+            </Link>
+          )}
           <button
             onClick={async () => { await signOut(); navigate({ to: "/" }); }}
-            className="ml-auto inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-2 text-sm font-semibold hover:bg-muted"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-2 text-sm font-semibold hover:bg-muted"
           >
             <LogOut className="h-4 w-4" /> Déconnexion
           </button>
+          </div>
         </div>
 
         {/* Stats */}
