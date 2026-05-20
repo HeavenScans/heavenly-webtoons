@@ -1,123 +1,188 @@
-import { Check, Crown, Zap, Star, Sparkles } from "lucide-react";
+import { Check, Crown, Rocket, Sparkles, Infinity as InfinityIcon } from "lucide-react";
 import { usePremium, type PremiumTier } from "@/hooks/usePremium";
 
-const tiers = [
+type Tier = {
+  name: string;
+  tagline: string;
+  price: string;
+  period: string;
+  icon: typeof Crown;
+  badge?: string;
+  features: string[];
+  cta: string;
+  highlight: boolean;
+  tier: PremiumTier | null;
+};
+
+const tiers: Tier[] = [
   {
     name: "Reader",
+    tagline: "Pour découvrir l'univers HeavenScans.",
     price: "0",
-    period: "Gratuit",
-    icon: Star,
-    accent: "var(--muted-foreground)",
+    period: "Gratuit, pour toujours",
+    icon: Sparkles,
     features: [
       "Catalogue complet en accès libre",
       "Lecture en ligne standard",
-      "Favoris et historique synchronisés",
-      "Support communautaire Discord",
+      "Favoris & historique synchronisés",
+      "Communauté Discord",
     ],
-    cta: "Commencer",
+    cta: "Commencer gratuitement",
     highlight: false,
-    tier: null as PremiumTier | null,
+    tier: null,
   },
   {
     name: "Premium",
+    tagline: "L'expérience de lecture sans compromis.",
     price: "7",
     period: "/ mois",
     icon: Crown,
-    accent: "var(--neon-blue)",
+    badge: "Le plus populaire",
     features: [
-      "Accès anticipé 48 h aux chapitres",
+      "Accès anticipé 48 h aux nouveaux chapitres",
       "Lecture 100 % sans publicité",
       "Qualité d'image HD améliorée",
-      "Chapitres exclusifs Premium",
+      "Chapitres & oneshots exclusifs Premium",
+      "Mode sombre cinéma & lecteur fluide",
       "Badge Premium sur Discord",
-      "Annulable à tout moment",
+      "Annulable en un clic",
     ],
     cta: "Devenir Premium",
     highlight: true,
-    tier: "premium" as PremiumTier | null,
+    tier: "premium",
   },
   {
     name: "Ultimate",
-    price: "8",
+    tagline: "Tout. Plus tôt. Sans aucune limite.",
+    price: "14",
     period: "/ mois",
-    icon: Zap,
-    accent: "var(--neon-violet)",
+    icon: Rocket,
+    badge: "Meilleure valeur",
     features: [
       "Tout le Premium inclus",
       "Accès ultra-anticipé 7 jours",
       "Téléchargement hors-ligne illimité",
-      "Lecture 4K & mode cinéma",
-      "Avant-premières & artbooks exclusifs",
+      "Lecture 4K & mode cinéma immersif",
+      "Artbooks numériques & bonus exclusifs",
       "Vote sur les prochaines séries traduites",
       "Salon Discord VIP avec l'équipe",
-      "Badge animé Ultimate",
+      "Badge animé Ultimate & avatar doré",
+      "Soutien direct aux traducteurs",
     ],
     cta: "Passer Ultimate",
     highlight: false,
-    tier: "ultimate" as PremiumTier | null,
+    tier: "ultimate",
   },
 ];
 
 export function PricingCards() {
   const { active, tier, activate, deactivate, hydrated } = usePremium();
   return (
-    <div className="grid gap-6 md:grid-cols-3">
+    <div className="grid gap-6 md:grid-cols-3 md:items-stretch">
       {tiers.map((t) => {
         const Icon = t.icon;
         const isCurrent = hydrated && active && t.tier === tier;
         const isFreeWhilePremium = hydrated && active && t.tier === null;
+        const isUltimate = t.tier === "ultimate";
         return (
           <div
             key={t.name}
             className={
-              "group relative overflow-hidden rounded-3xl border bg-[color:var(--glass-bg)] backdrop-blur-xl p-7 transition-all duration-300 hover:-translate-y-1.5 " +
+              "group relative flex flex-col overflow-hidden rounded-3xl border bg-[color:var(--glass-bg)] backdrop-blur-xl p-7 transition-all duration-500 hover:-translate-y-2 " +
               (t.highlight
-                ? "border-[color:var(--neon-blue)]/40 shadow-[var(--shadow-neon)]"
-                : "border-[color:var(--glass-border)] hover:border-[color:var(--neon-violet)]/40 hover:shadow-[var(--shadow-neon-violet)]")
+                ? "md:scale-[1.04] border-transparent shadow-[var(--shadow-neon)] ring-1 ring-[color:var(--neon-blue)]/40"
+                : isUltimate
+                  ? "border-[color:var(--neon-violet)]/30 hover:border-[color:var(--neon-violet)]/60 hover:shadow-[var(--shadow-neon-violet)]"
+                  : "border-[color:var(--glass-border)] hover:border-foreground/30")
             }
           >
-            {/* Glow */}
-            <div
-              className="pointer-events-none absolute -top-24 -right-24 h-56 w-56 rounded-full opacity-30 blur-3xl transition-opacity group-hover:opacity-60"
-              style={{ background: `var(--gradient-neon)` }}
-            />
+            {/* Animated gradient border for highlight */}
             {t.highlight && (
-              <div className="absolute top-4 right-4 inline-flex items-center gap-1 rounded-full bg-[image:var(--gradient-neon)] px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-white">
-                Populaire
+              <div className="pointer-events-none absolute inset-0 rounded-3xl opacity-60 [mask:linear-gradient(#000_0_0)_content-box,linear-gradient(#000_0_0)] [mask-composite:exclude] p-px">
+                <div className="h-full w-full rounded-3xl bg-[conic-gradient(from_0deg,oklch(0.75_0.18_240),oklch(0.65_0.25_295),oklch(0.78_0.16_75),oklch(0.75_0.18_240))] animate-[spin_8s_linear_infinite]" />
               </div>
             )}
+            {/* Ambient glow */}
             <div
-              className="grid h-12 w-12 place-items-center rounded-2xl"
+              className="pointer-events-none absolute -top-32 -right-24 h-64 w-64 rounded-full opacity-30 blur-3xl transition-opacity duration-500 group-hover:opacity-70"
               style={{
-                background: t.highlight ? "var(--gradient-neon)" : "var(--card)",
-                boxShadow: t.highlight ? "var(--shadow-neon-violet)" : "none",
-                border: t.highlight ? "none" : "1px solid var(--glass-border)",
+                background: isUltimate
+                  ? "radial-gradient(circle, oklch(0.65 0.25 295) 0%, transparent 70%)"
+                  : "var(--gradient-neon)",
               }}
-            >
-              <Icon className="h-5 w-5 text-white" />
+            />
+
+            {t.badge && (
+              <div
+                className={
+                  "absolute top-4 right-4 inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-black uppercase tracking-[0.15em] " +
+                  (t.highlight
+                    ? "bg-[image:var(--gradient-neon)] text-white shadow-[var(--shadow-neon-violet)]"
+                    : "border border-[color:var(--neon-violet)]/40 bg-background/60 text-[color:var(--neon-violet)] backdrop-blur")
+                }
+              >
+                {t.highlight && <Sparkles className="h-2.5 w-2.5" />}
+                {t.badge}
+              </div>
+            )}
+
+            <div className="relative">
+              <div
+                className="grid h-14 w-14 place-items-center rounded-2xl"
+                style={{
+                  background: t.highlight
+                    ? "var(--gradient-neon)"
+                    : isUltimate
+                      ? "linear-gradient(135deg, oklch(0.65 0.25 295), oklch(0.45 0.18 295))"
+                      : "var(--card)",
+                  boxShadow: t.highlight
+                    ? "var(--shadow-neon-violet)"
+                    : isUltimate
+                      ? "0 0 24px -8px oklch(0.65 0.25 295 / 0.6)"
+                      : "none",
+                  border: t.highlight || isUltimate ? "none" : "1px solid var(--glass-border)",
+                }}
+              >
+                <Icon className="h-6 w-6 text-white" />
+              </div>
+              <h3 className="mt-5 text-3xl font-black tracking-tight">{t.name}</h3>
+              <p className="mt-1 text-sm text-muted-foreground min-h-[2.5rem]">{t.tagline}</p>
+
+              <div className="mt-5 flex items-baseline gap-1.5 border-b border-[color:var(--glass-border)] pb-5">
+                <span
+                  className={
+                    "text-5xl font-black tracking-tight " +
+                    (t.highlight || isUltimate
+                      ? "bg-[image:var(--gradient-neon)] bg-clip-text text-transparent"
+                      : "text-foreground")
+                  }
+                >
+                  {t.price === "0" ? "0€" : `${t.price}€`}
+                </span>
+                <span className="text-sm text-muted-foreground">{t.period}</span>
+              </div>
             </div>
-            <h3 className="mt-5 text-2xl font-black tracking-tight">{t.name}</h3>
-            <div className="mt-1 flex items-baseline gap-1">
-              <span className="text-4xl font-black bg-[image:var(--gradient-neon)] bg-clip-text text-transparent">
-                {t.price === "0" ? "0€" : `${t.price}€`}
-              </span>
-              <span className="text-sm text-muted-foreground">{t.period}</span>
-            </div>
-            <ul className="mt-6 space-y-3 text-sm">
+
+            <ul className="relative mt-6 space-y-3 text-sm flex-1">
               {t.features.map((f) => (
                 <li key={f} className="flex items-start gap-2">
                   <span
-                    className="mt-0.5 grid h-5 w-5 flex-none place-items-center rounded-full"
+                    className="mt-0.5 grid h-5 w-5 flex-none place-items-center rounded-full ring-1 ring-inset ring-white/10"
                     style={{
-                      background: t.highlight ? "var(--gradient-neon)" : "var(--secondary)",
+                      background: t.highlight
+                        ? "var(--gradient-neon)"
+                        : isUltimate
+                          ? "oklch(0.65 0.25 295 / 0.25)"
+                          : "var(--secondary)",
                     }}
                   >
                     <Check className="h-3 w-3 text-white" />
                   </span>
-                  <span className="text-muted-foreground">{f}</span>
+                  <span className="text-foreground/85">{f}</span>
                 </li>
               ))}
             </ul>
+
             <button
               onClick={() => {
                 if (t.tier === null) {
@@ -128,10 +193,12 @@ export function PricingCards() {
               }}
               disabled={isCurrent}
               className={
-                "mt-7 w-full rounded-xl py-3 text-sm font-bold transition-all duration-300 disabled:opacity-80 disabled:cursor-default " +
+                "relative mt-7 w-full rounded-xl py-3.5 text-sm font-bold transition-all duration-300 disabled:opacity-80 disabled:cursor-default " +
                 (t.highlight
                   ? "bg-[image:var(--gradient-neon)] text-white shadow-[var(--shadow-neon)] hover:scale-[1.02]"
-                  : "border border-[color:var(--glass-border)] bg-background/40 hover:border-[color:var(--neon-violet)] hover:text-[color:var(--neon-violet)]")
+                  : isUltimate
+                    ? "border border-[color:var(--neon-violet)]/40 bg-[color:var(--neon-violet)]/10 text-[color:var(--neon-violet)] hover:bg-[color:var(--neon-violet)]/20 hover:scale-[1.02]"
+                    : "border border-[color:var(--glass-border)] bg-background/40 hover:border-foreground/40")
               }
             >
               {isCurrent
@@ -140,6 +207,12 @@ export function PricingCards() {
                   ? "Désactiver Premium"
                   : t.cta}
             </button>
+
+            {isUltimate && (
+              <p className="relative mt-3 flex items-center justify-center gap-1.5 text-[11px] text-muted-foreground">
+                <InfinityIcon className="h-3 w-3" /> Inclut tous les bonus à venir
+              </p>
+            )}
           </div>
         );
       })}
