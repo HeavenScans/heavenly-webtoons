@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { Search, Menu, BookOpen, X, Clock, Trash2, Crown, Heart, User as UserIcon, LogIn, ShieldCheck } from "lucide-react";
+import { Search, Menu, X, Clock, Trash2, Crown, Heart, User as UserIcon, LogIn, ShieldCheck } from "lucide-react";
+import logoUrl from "@/assets/logo.png";
 import { useState, useEffect, useRef, useMemo } from "react";
 import { series, allGenres } from "@/lib/series";
 import { usePremium } from "@/hooks/usePremium";
@@ -102,9 +103,13 @@ export function Header() {
     <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
         <Link to="/" className="flex items-center gap-2 group">
-          <div className="grid h-9 w-9 place-items-center rounded-lg bg-[image:var(--gradient-hero)] shadow-[var(--shadow-glow)] transition-transform group-hover:scale-110">
-            <BookOpen className="h-5 w-5 text-primary-foreground" />
-          </div>
+          <img
+            src={logoUrl}
+            alt="HeavenScans logo"
+            width={36}
+            height={36}
+            className="h-9 w-9 object-contain drop-shadow-[0_0_12px_oklch(0.65_0.25_295/0.5)] transition-transform group-hover:scale-110"
+          />
           <span className="text-xl font-black tracking-tight">
             Heaven<span className="text-primary">Scans</span>
           </span>

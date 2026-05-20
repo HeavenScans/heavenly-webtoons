@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { BookOpen, Github, MessageCircle, Twitter, Send } from "lucide-react";
+import { Github, MessageCircle, Twitter, Send } from "lucide-react";
+import logoUrl from "@/assets/logo.png";
 import { useState } from "react";
 
 export function Footer() {
@@ -10,9 +11,14 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 py-12 grid gap-10 md:grid-cols-4">
         <div className="md:col-span-2">
           <div className="flex items-center gap-2">
-            <div className="grid h-9 w-9 place-items-center rounded-lg bg-[image:var(--gradient-hero)]">
-              <BookOpen className="h-5 w-5 text-primary-foreground" />
-            </div>
+            <img
+              src={logoUrl}
+              alt="HeavenScans logo"
+              width={36}
+              height={36}
+              loading="lazy"
+              className="h-9 w-9 object-contain"
+            />
             <span className="text-xl font-black">Heaven<span className="text-primary">Scans</span></span>
           </div>
           <p className="mt-4 max-w-md text-sm text-muted-foreground">

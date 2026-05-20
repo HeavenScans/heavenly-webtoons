@@ -1,4 +1,4 @@
-import { Check, Crown, Zap, Star } from "lucide-react";
+import { Check, Crown, Zap, Star, Sparkles } from "lucide-react";
 import { usePremium, type PremiumTier } from "@/hooks/usePremium";
 
 const tiers = [
@@ -8,7 +8,12 @@ const tiers = [
     period: "Gratuit",
     icon: Star,
     accent: "var(--muted-foreground)",
-    features: ["Catalogue complet", "Lecture standard", "Support communauté"],
+    features: [
+      "Catalogue complet en accès libre",
+      "Lecture en ligne standard",
+      "Favoris et historique synchronisés",
+      "Support communautaire Discord",
+    ],
     cta: "Commencer",
     highlight: false,
     tier: null as PremiumTier | null,
@@ -20,10 +25,12 @@ const tiers = [
     icon: Crown,
     accent: "var(--neon-blue)",
     features: [
-      "Accès anticipé aux chapitres",
-      "Lecture sans publicité",
+      "Accès anticipé 48 h aux chapitres",
+      "Lecture 100 % sans publicité",
+      "Qualité d'image HD améliorée",
       "Chapitres exclusifs Premium",
       "Badge Premium sur Discord",
+      "Annulable à tout moment",
     ],
     cta: "Devenir Premium",
     highlight: true,
@@ -31,15 +38,19 @@ const tiers = [
   },
   {
     name: "Ultimate",
-    price: "9,99",
+    price: "8",
     period: "/ mois",
     icon: Zap,
     accent: "var(--neon-violet)",
     features: [
-      "Tout le Premium",
-      "Téléchargement hors-ligne",
-      "Avant-premières exclusives",
-      "Soutien direct à l'équipe",
+      "Tout le Premium inclus",
+      "Accès ultra-anticipé 7 jours",
+      "Téléchargement hors-ligne illimité",
+      "Lecture 4K & mode cinéma",
+      "Avant-premières & artbooks exclusifs",
+      "Vote sur les prochaines séries traduites",
+      "Salon Discord VIP avec l'équipe",
+      "Badge animé Ultimate",
     ],
     cta: "Passer Ultimate",
     highlight: false,
