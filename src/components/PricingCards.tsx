@@ -20,7 +20,7 @@ const tiers = [
   },
   {
     name: "Premium",
-    price: "4,99",
+    price: "7",
     period: "/ mois",
     icon: Crown,
     accent: "var(--neon-blue)",
