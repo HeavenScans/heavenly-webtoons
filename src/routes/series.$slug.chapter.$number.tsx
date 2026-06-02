@@ -6,6 +6,7 @@ import { ChevronLeft, ChevronRight, ArrowLeft, Lock, Crown, List } from "lucide-
 import { usePremium } from "@/hooks/usePremium";
 import { useReadingHistory } from "@/hooks/useReadingHistory";
 import { useDbSeries } from "@/hooks/useDbSeries";
+import { TranslatePageButton } from "@/components/TranslatePageButton";
 import { useEffect } from "react";
 
 export const Route = createFileRoute("/series/$slug/chapter/$number")({
@@ -88,16 +89,20 @@ function ChapterReader() {
           </div>
         ) : (
           <div className="mt-8 space-y-3">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="overflow-hidden rounded-xl bg-card">
-                <img
-                  src={`https://picsum.photos/seed/${slug}-${number}-${i}/900/1300`}
-                  alt={`Page ${i + 1}`}
-                  loading="lazy"
-                  className="block w-full"
-                />
-              </div>
-            ))}
+            {Array.from({ length: 8 }).map((_, i) => {
+              const url = `https://picsum.photos/seed/${slug}-${number}-${i}/900/1300`;
+              return (
+                <div key={i} className="relative overflow-hidden rounded-xl bg-card">
+                  <img
+                    src={url}
+                    alt={`Page ${i + 1}`}
+                    loading="lazy"
+                    className="block w-full"
+                  />
+                  <TranslatePageButton imageUrl={url} pageIndex={i} />
+                </div>
+              );
+            })}
           </div>
         )}
 

@@ -58,7 +58,7 @@ const tiers: Tier[] = [
     features: [
       "Accès ultra-anticipé 7 jours",
       "Téléchargement hors-ligne illimité",
-      "Lecture 4K & mode cinéma immersif",
+      "Traduction IA des pages (7 langues)",
       "Salon Discord VIP avec l'équipe",
     ],
     cta: "Passer Ultimate",
