@@ -34,7 +34,7 @@ const tiers: Tier[] = [
   {
     name: "Premium",
     tagline: "L'expérience de lecture sans compromis.",
-    price: "7",
+    price: "14",
     period: "/ mois",
     icon: Crown,
     badge: "Le plus populaire",
@@ -51,7 +51,7 @@ const tiers: Tier[] = [
   {
     name: "Ultimate",
     tagline: "Tout. Plus tôt. Sans aucune limite.",
-    price: "14",
+    price: "35",
     period: "/ mois",
     icon: Rocket,
     badge: "Meilleure valeur",
