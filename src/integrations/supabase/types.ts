@@ -23,6 +23,7 @@ export type Database = {
           pages: string[]
           published: boolean
           released_at: string
+          scheduled_at: string | null
           series_id: string
           title: string | null
         }
@@ -34,6 +35,7 @@ export type Database = {
           pages?: string[]
           published?: boolean
           released_at?: string
+          scheduled_at?: string | null
           series_id: string
           title?: string | null
         }
@@ -45,6 +47,7 @@ export type Database = {
           pages?: string[]
           published?: boolean
           released_at?: string
+          scheduled_at?: string | null
           series_id?: string
           title?: string | null
         }
