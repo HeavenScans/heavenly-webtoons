@@ -27,6 +27,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as SeriesSlugRouteImport } from './routes/series.$slug'
 import { Route as ApiSitemapDotxmlRouteImport } from './routes/api/sitemap[.]xml'
 import { Route as SeriesSlugChapterNumberRouteImport } from './routes/series.$slug.chapter.$number'
+import { Route as ApiPublicHooksPublishScheduledChaptersRouteImport } from './routes/api/public/hooks/publish-scheduled-chapters'
 
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
@@ -118,6 +119,12 @@ const SeriesSlugChapterNumberRoute = SeriesSlugChapterNumberRouteImport.update({
   path: '/chapter/$number',
   getParentRoute: () => SeriesSlugRoute,
 } as any)
+const ApiPublicHooksPublishScheduledChaptersRoute =
+  ApiPublicHooksPublishScheduledChaptersRouteImport.update({
+    id: '/api/public/hooks/publish-scheduled-chapters',
+    path: '/api/public/hooks/publish-scheduled-chapters',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -137,6 +144,7 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/api/sitemap.xml': typeof ApiSitemapDotxmlRoute
   '/series/$slug': typeof SeriesSlugRouteWithChildren
+  '/api/public/hooks/publish-scheduled-chapters': typeof ApiPublicHooksPublishScheduledChaptersRoute
   '/series/$slug/chapter/$number': typeof SeriesSlugChapterNumberRoute
 }
 export interface FileRoutesByTo {
@@ -157,6 +165,7 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/api/sitemap.xml': typeof ApiSitemapDotxmlRoute
   '/series/$slug': typeof SeriesSlugRouteWithChildren
+  '/api/public/hooks/publish-scheduled-chapters': typeof ApiPublicHooksPublishScheduledChaptersRoute
   '/series/$slug/chapter/$number': typeof SeriesSlugChapterNumberRoute
 }
 export interface FileRoutesById {
@@ -178,6 +187,7 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/api/sitemap.xml': typeof ApiSitemapDotxmlRoute
   '/series/$slug': typeof SeriesSlugRouteWithChildren
+  '/api/public/hooks/publish-scheduled-chapters': typeof ApiPublicHooksPublishScheduledChaptersRoute
   '/series/$slug/chapter/$number': typeof SeriesSlugChapterNumberRoute
 }
 export interface FileRouteTypes {
@@ -200,6 +210,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/api/sitemap.xml'
     | '/series/$slug'
+    | '/api/public/hooks/publish-scheduled-chapters'
     | '/series/$slug/chapter/$number'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -220,6 +231,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/api/sitemap.xml'
     | '/series/$slug'
+    | '/api/public/hooks/publish-scheduled-chapters'
     | '/series/$slug/chapter/$number'
   id:
     | '__root__'
@@ -240,6 +252,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/api/sitemap.xml'
     | '/series/$slug'
+    | '/api/public/hooks/publish-scheduled-chapters'
     | '/series/$slug/chapter/$number'
   fileRoutesById: FileRoutesById
 }
@@ -260,6 +273,7 @@ export interface RootRouteChildren {
   SeriesRoute: typeof SeriesRouteWithChildren
   TermsRoute: typeof TermsRoute
   ApiSitemapDotxmlRoute: typeof ApiSitemapDotxmlRoute
+  ApiPublicHooksPublishScheduledChaptersRoute: typeof ApiPublicHooksPublishScheduledChaptersRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -390,6 +404,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SeriesSlugChapterNumberRouteImport
       parentRoute: typeof SeriesSlugRoute
     }
+    '/api/public/hooks/publish-scheduled-chapters': {
+      id: '/api/public/hooks/publish-scheduled-chapters'
+      path: '/api/public/hooks/publish-scheduled-chapters'
+      fullPath: '/api/public/hooks/publish-scheduled-chapters'
+      preLoaderRoute: typeof ApiPublicHooksPublishScheduledChaptersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -433,6 +454,8 @@ const rootRouteChildren: RootRouteChildren = {
   SeriesRoute: SeriesRouteWithChildren,
   TermsRoute: TermsRoute,
   ApiSitemapDotxmlRoute: ApiSitemapDotxmlRoute,
+  ApiPublicHooksPublishScheduledChaptersRoute:
+    ApiPublicHooksPublishScheduledChaptersRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
