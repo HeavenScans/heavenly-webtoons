@@ -6,7 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useRole } from "@/hooks/useRole";
 import { supabase } from "@/integrations/supabase/client";
 import { allGenres } from "@/lib/series";
-import { Loader2, Plus, Trash2, Upload, BookPlus, Library, ShieldAlert, RefreshCw } from "lucide-react";
+import { Loader2, Plus, Trash2, Upload, BookPlus, Library, ShieldAlert, RefreshCw, Bot, Calendar, Zap, Clock } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({ meta: [{ title: "Admin — HeavenScans" }, { name: "robots", content: "noindex" }] }),
@@ -35,6 +35,7 @@ type ChapterRow = {
   is_premium: boolean;
   published: boolean;
   released_at: string;
+  scheduled_at: string | null;
 };
 
 function slugify(s: string) {
