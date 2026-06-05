@@ -154,3 +154,75 @@
     color: var(--color-foreground);
   }
 }
+
+/* Celestial Hero animations */
+@keyframes celestial-twinkle {
+  0%, 100% { opacity: 0.2; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+@keyframes celestial-float-up {
+  0% { transform: translateY(110%) translateX(0); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(-20%) translateX(40px); opacity: 0; }
+}
+@keyframes celestial-drift {
+  0%, 100% { transform: translate3d(0,0,0) scale(1); }
+  50% { transform: translate3d(-30px,20px,0) scale(1.05); }
+}
+@keyframes celestial-rays {
+  0%, 100% { opacity: 0.35; transform: rotate(0deg); }
+  50% { opacity: 0.6; transform: rotate(2deg); }
+}
+@keyframes celestial-logo-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+.celestial-hero .star {
+  position: absolute;
+  border-radius: 9999px;
+  background: white;
+  box-shadow: 0 0 6px 1px rgba(255,255,255,0.8);
+  animation: celestial-twinkle ease-in-out infinite;
+}
+.celestial-hero .particle {
+  position: absolute;
+  bottom: -20px;
+  border-radius: 9999px;
+  filter: blur(0.5px);
+  animation: celestial-float-up linear infinite;
+}
+.celestial-hero .nebula {
+  background:
+    radial-gradient(40% 35% at 20% 30%, oklch(0.55 0.25 295 / 0.45), transparent 70%),
+    radial-gradient(35% 30% at 80% 20%, oklch(0.65 0.22 240 / 0.4), transparent 70%),
+    radial-gradient(45% 40% at 60% 80%, oklch(0.55 0.22 320 / 0.35), transparent 70%);
+  filter: blur(40px);
+  animation: celestial-drift 18s ease-in-out infinite;
+}
+.celestial-hero .light-rays {
+  background:
+    conic-gradient(from 200deg at 50% 0%,
+      transparent 0deg,
+      oklch(0.85 0.15 240 / 0.18) 20deg,
+      transparent 40deg,
+      oklch(0.75 0.22 295 / 0.15) 80deg,
+      transparent 100deg,
+      oklch(0.85 0.15 240 / 0.12) 140deg,
+      transparent 180deg);
+  mix-blend-mode: screen;
+  animation: celestial-rays 14s ease-in-out infinite;
+  transform-origin: 50% 0%;
+}
+.celestial-hero .logo-float {
+  animation: celestial-logo-float 6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .celestial-hero .star,
+  .celestial-hero .particle,
+  .celestial-hero .nebula,
+  .celestial-hero .light-rays,
+  .celestial-hero .logo-float { animation: none; }
+}
