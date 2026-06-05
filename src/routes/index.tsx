@@ -7,6 +7,7 @@ import { series, allGenres } from "@/lib/series";
 import { Flame, Sparkles, TrendingUp, ArrowRight, Crown, Zap, ShieldOff, BookOpen } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { ScrollToTop } from "@/components/ScrollToTop";
+import { CelestialHero } from "@/components/CelestialHero";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -28,30 +29,7 @@ function Index() {
     <div className="min-h-screen flex flex-col">
       <Header />
 
-      {/* Hero */}
-      <section className="relative overflow-hidden border-b border-border">
-        <div className="absolute inset-0 -z-10 bg-[image:var(--gradient-hero)] opacity-20" />
-        <div className="absolute inset-0 -z-10 [background:radial-gradient(circle_at_20%_20%,oklch(0.55_0.20_295/0.25),transparent_50%),radial-gradient(circle_at_80%_60%,oklch(0.78_0.16_75/0.2),transparent_50%)]" />
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 py-20 sm:py-28">
-          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 backdrop-blur px-3 py-1 text-xs font-semibold uppercase tracking-wider text-primary">
-            <Sparkles className="h-3 w-3" /> Bienvenue dans le paradis du scan
-          </div>
-          <h1 className="mt-5 max-w-3xl text-5xl sm:text-6xl md:text-7xl font-black tracking-tight leading-[1.05]">
-            Lis tes scans préférés sur <span className="bg-[image:var(--gradient-hero)] bg-clip-text text-transparent">HeavenScans</span>
-          </h1>
-          <p className="mt-5 max-w-xl text-lg text-muted-foreground">
-            Mangas, manhwas, manhuas et webtoons traduits par une équipe passionnée. Nouvelles sorties chaque semaine.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Link to="/series" className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-bold text-primary-foreground shadow-[var(--shadow-glow)] hover:opacity-90 transition">
-              Explorer les séries <ArrowRight className="h-4 w-4" />
-            </Link>
-            <Link to="/latest" className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-6 py-3 text-sm font-bold hover:bg-muted transition">
-              Derniers chapitres
-            </Link>
-          </div>
-        </div>
-      </section>
+      <CelestialHero />
 
       <main className="mx-auto w-full max-w-7xl flex-1 px-4 sm:px-6 py-12 space-y-16">
         {/* Latest releases */}
