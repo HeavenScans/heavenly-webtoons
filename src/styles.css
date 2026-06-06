@@ -63,25 +63,34 @@
 
 :root {
   --radius: 0.75rem;
-  --background: oklch(0.16 0.02 270);
-  --foreground: oklch(0.97 0.01 280);
-  --card: oklch(0.20 0.025 270);
+  --background: #050816;
+  --foreground: #ffffff;
+  --card: oklch(0.20 0.04 275);
   --card-foreground: oklch(0.97 0.01 280);
   --popover: oklch(0.20 0.025 270);
   --popover-foreground: oklch(0.97 0.01 280);
-  --primary: oklch(0.78 0.16 75);
-  --primary-foreground: oklch(0.18 0.03 270);
+  --primary: #6D4AFF;
+  --primary-foreground: #ffffff;
   --secondary: oklch(0.26 0.03 270);
   --secondary-foreground: oklch(0.97 0.01 280);
   --muted: oklch(0.24 0.025 270);
   --muted-foreground: oklch(0.70 0.02 270);
-  --accent: oklch(0.55 0.20 295);
-  --accent-foreground: oklch(0.98 0.01 280);
+  --accent: #4DA6FF;
+  --accent-foreground: #050816;
   --destructive: oklch(0.62 0.24 25);
   --destructive-foreground: oklch(0.98 0.01 280);
   --border: oklch(0.30 0.03 270);
   --input: oklch(0.26 0.03 270);
-  --ring: oklch(0.78 0.16 75);
+  --ring: #6D4AFF;
+  --celestial-navy: #050816;
+  --celestial-purple: #6D4AFF;
+  --celestial-blue: #4DA6FF;
+  --celestial-gold: #F5B041;
+  --celestial-white: #FFFFFF;
+  --gradient-celestial: linear-gradient(135deg, #6D4AFF 0%, #4DA6FF 50%, #F5B041 100%);
+  --gradient-portal: radial-gradient(circle at 50% 50%, #F5B041 0%, #6D4AFF 35%, #050816 75%);
+  --shadow-celestial: 0 20px 80px -20px rgba(109,74,255,0.6), 0 0 60px -10px rgba(77,166,255,0.4);
+  --shadow-gold: 0 0 40px rgba(245,176,65,0.5);
   --gradient-hero: linear-gradient(135deg, oklch(0.55 0.20 295) 0%, oklch(0.78 0.16 75) 100%);
   --gradient-card: linear-gradient(180deg, oklch(0.22 0.03 270) 0%, oklch(0.16 0.02 270) 100%);
   --shadow-glow: 0 10px 40px -10px oklch(0.55 0.20 295 / 0.5);
@@ -226,3 +235,41 @@
   .celestial-hero .light-rays,
   .celestial-hero .logo-float { animation: none; }
 }
+
+/* Celestial Kingdom additions */
+@keyframes portal-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes portal-pulse { 0%,100% { opacity: 0.85; filter: blur(40px); } 50% { opacity: 1; filter: blur(60px); } }
+@keyframes cloud-drift { 0% { transform: translateX(-10%); } 100% { transform: translateX(110%); } }
+@keyframes island-bob { 0%,100% { transform: translateY(0) rotate(-1deg); } 50% { transform: translateY(-18px) rotate(1deg); } }
+@keyframes gold-spark { 0%,100% { opacity: 0; transform: translateY(0) scale(0.5); } 50% { opacity: 1; transform: translateY(-30px) scale(1); } }
+@keyframes ray-sweep { 0%,100% { opacity: 0.4; } 50% { opacity: 0.9; } }
+
+.portal-ring { animation: portal-spin 60s linear infinite; }
+.portal-ring-rev { animation: portal-spin 90s linear infinite reverse; }
+.portal-core { animation: portal-pulse 6s ease-in-out infinite; }
+.cloud-drift { animation: cloud-drift linear infinite; }
+.island-bob { animation: island-bob 8s ease-in-out infinite; }
+.gold-spark { animation: gold-spark ease-in-out infinite; }
+.ray-sweep { animation: ray-sweep 5s ease-in-out infinite; }
+
+.glass-card {
+  background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+  border: 1px solid rgba(255,255,255,0.12);
+  backdrop-filter: blur(20px) saturate(140%);
+}
+.glass-card-gold {
+  background: linear-gradient(135deg, rgba(245,176,65,0.12), rgba(109,74,255,0.06));
+  border: 1px solid rgba(245,176,65,0.25);
+  backdrop-filter: blur(20px) saturate(140%);
+}
+
+.text-gradient-celestial {
+  background: linear-gradient(135deg, #FFFFFF 0%, #4DA6FF 45%, #F5B041 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* hide scrollbar utility */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
