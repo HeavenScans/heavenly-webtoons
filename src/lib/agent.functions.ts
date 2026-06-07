@@ -226,7 +226,7 @@ export const runAgent = createServerFn({ method: "POST" })
       ...data.messages,
     ];
 
-    const toolEvents: Array<{ name: string; result: unknown }> = [];
+    const toolEvents: Array<{ name: string; result: string }> = [];
 
     for (let step = 0; step < 6; step++) {
       const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
@@ -276,12 +276,13 @@ export const runAgent = createServerFn({ method: "POST" })
             parsed = {};
           }
           const result = await execTool(call.function.name, parsed);
-          toolEvents.push({ name: call.function.name, result });
+          const resultStr = JSON.stringify(result);
+          toolEvents.push({ name: call.function.name, result: resultStr });
           convo.push({
             role: "tool",
             tool_call_id: call.id,
             name: call.function.name,
-            content: JSON.stringify(result),
+            content: resultStr,
           });
         }
         continue;
