@@ -26,6 +26,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SeriesSlugRouteImport } from './routes/series.$slug'
 import { Route as ApiSitemapDotxmlRouteImport } from './routes/api/sitemap[.]xml'
+import { Route as AdminAiRouteImport } from './routes/admin.ai'
 import { Route as SeriesSlugChapterNumberRouteImport } from './routes/series.$slug.chapter.$number'
 import { Route as ApiPublicHooksPublishScheduledChaptersRouteImport } from './routes/api/public/hooks/publish-scheduled-chapters'
 
@@ -114,6 +115,11 @@ const ApiSitemapDotxmlRoute = ApiSitemapDotxmlRouteImport.update({
   path: '/api/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminAiRoute = AdminAiRouteImport.update({
+  id: '/ai',
+  path: '/ai',
+  getParentRoute: () => AdminRoute,
+} as any)
 const SeriesSlugChapterNumberRoute = SeriesSlugChapterNumberRouteImport.update({
   id: '/chapter/$number',
   path: '/chapter/$number',
@@ -129,7 +135,7 @@ const ApiPublicHooksPublishScheduledChaptersRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/dmca': typeof DmcaRoute
@@ -142,6 +148,7 @@ export interface FileRoutesByFullPath {
   '/profile': typeof ProfileRoute
   '/series': typeof SeriesRouteWithChildren
   '/terms': typeof TermsRoute
+  '/admin/ai': typeof AdminAiRoute
   '/api/sitemap.xml': typeof ApiSitemapDotxmlRoute
   '/series/$slug': typeof SeriesSlugRouteWithChildren
   '/api/public/hooks/publish-scheduled-chapters': typeof ApiPublicHooksPublishScheduledChaptersRoute
@@ -150,7 +157,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/dmca': typeof DmcaRoute
@@ -163,6 +170,7 @@ export interface FileRoutesByTo {
   '/profile': typeof ProfileRoute
   '/series': typeof SeriesRouteWithChildren
   '/terms': typeof TermsRoute
+  '/admin/ai': typeof AdminAiRoute
   '/api/sitemap.xml': typeof ApiSitemapDotxmlRoute
   '/series/$slug': typeof SeriesSlugRouteWithChildren
   '/api/public/hooks/publish-scheduled-chapters': typeof ApiPublicHooksPublishScheduledChaptersRoute
@@ -172,7 +180,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/dmca': typeof DmcaRoute
@@ -185,6 +193,7 @@ export interface FileRoutesById {
   '/profile': typeof ProfileRoute
   '/series': typeof SeriesRouteWithChildren
   '/terms': typeof TermsRoute
+  '/admin/ai': typeof AdminAiRoute
   '/api/sitemap.xml': typeof ApiSitemapDotxmlRoute
   '/series/$slug': typeof SeriesSlugRouteWithChildren
   '/api/public/hooks/publish-scheduled-chapters': typeof ApiPublicHooksPublishScheduledChaptersRoute
@@ -208,6 +217,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/series'
     | '/terms'
+    | '/admin/ai'
     | '/api/sitemap.xml'
     | '/series/$slug'
     | '/api/public/hooks/publish-scheduled-chapters'
@@ -229,6 +239,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/series'
     | '/terms'
+    | '/admin/ai'
     | '/api/sitemap.xml'
     | '/series/$slug'
     | '/api/public/hooks/publish-scheduled-chapters'
@@ -250,6 +261,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/series'
     | '/terms'
+    | '/admin/ai'
     | '/api/sitemap.xml'
     | '/series/$slug'
     | '/api/public/hooks/publish-scheduled-chapters'
@@ -259,7 +271,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
-  AdminRoute: typeof AdminRoute
+  AdminRoute: typeof AdminRouteWithChildren
   AuthRoute: typeof AuthRoute
   ContactRoute: typeof ContactRoute
   DmcaRoute: typeof DmcaRoute
@@ -397,6 +409,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiSitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/ai': {
+      id: '/admin/ai'
+      path: '/ai'
+      fullPath: '/admin/ai'
+      preLoaderRoute: typeof AdminAiRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/series/$slug/chapter/$number': {
       id: '/series/$slug/chapter/$number'
       path: '/chapter/$number'
@@ -413,6 +432,16 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface AdminRouteChildren {
+  AdminAiRoute: typeof AdminAiRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminAiRoute: AdminAiRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface SeriesSlugRouteChildren {
   SeriesSlugChapterNumberRoute: typeof SeriesSlugChapterNumberRoute
@@ -440,7 +469,7 @@ const SeriesRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
-  AdminRoute: AdminRoute,
+  AdminRoute: AdminRouteWithChildren,
   AuthRoute: AuthRoute,
   ContactRoute: ContactRoute,
   DmcaRoute: DmcaRoute,
@@ -460,13 +489,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
