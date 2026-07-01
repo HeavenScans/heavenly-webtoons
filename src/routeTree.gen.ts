@@ -26,6 +26,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SeriesSlugRouteImport } from './routes/series.$slug'
 import { Route as ApiSitemapDotxmlRouteImport } from './routes/api/sitemap[.]xml'
+import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
 import { Route as AdminAiRouteImport } from './routes/admin.ai'
 import { Route as SeriesSlugChapterNumberRouteImport } from './routes/series.$slug.chapter.$number'
 import { Route as ApiPublicHooksPublishScheduledChaptersRouteImport } from './routes/api/public/hooks/publish-scheduled-chapters'
@@ -115,6 +116,11 @@ const ApiSitemapDotxmlRoute = ApiSitemapDotxmlRouteImport.update({
   path: '/api/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminSettingsRoute = AdminSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminAiRoute = AdminAiRouteImport.update({
   id: '/ai',
   path: '/ai',
@@ -149,6 +155,7 @@ export interface FileRoutesByFullPath {
   '/series': typeof SeriesRouteWithChildren
   '/terms': typeof TermsRoute
   '/admin/ai': typeof AdminAiRoute
+  '/admin/settings': typeof AdminSettingsRoute
   '/api/sitemap.xml': typeof ApiSitemapDotxmlRoute
   '/series/$slug': typeof SeriesSlugRouteWithChildren
   '/api/public/hooks/publish-scheduled-chapters': typeof ApiPublicHooksPublishScheduledChaptersRoute
@@ -171,6 +178,7 @@ export interface FileRoutesByTo {
   '/series': typeof SeriesRouteWithChildren
   '/terms': typeof TermsRoute
   '/admin/ai': typeof AdminAiRoute
+  '/admin/settings': typeof AdminSettingsRoute
   '/api/sitemap.xml': typeof ApiSitemapDotxmlRoute
   '/series/$slug': typeof SeriesSlugRouteWithChildren
   '/api/public/hooks/publish-scheduled-chapters': typeof ApiPublicHooksPublishScheduledChaptersRoute
@@ -194,6 +202,7 @@ export interface FileRoutesById {
   '/series': typeof SeriesRouteWithChildren
   '/terms': typeof TermsRoute
   '/admin/ai': typeof AdminAiRoute
+  '/admin/settings': typeof AdminSettingsRoute
   '/api/sitemap.xml': typeof ApiSitemapDotxmlRoute
   '/series/$slug': typeof SeriesSlugRouteWithChildren
   '/api/public/hooks/publish-scheduled-chapters': typeof ApiPublicHooksPublishScheduledChaptersRoute
@@ -218,6 +227,7 @@ export interface FileRouteTypes {
     | '/series'
     | '/terms'
     | '/admin/ai'
+    | '/admin/settings'
     | '/api/sitemap.xml'
     | '/series/$slug'
     | '/api/public/hooks/publish-scheduled-chapters'
@@ -240,6 +250,7 @@ export interface FileRouteTypes {
     | '/series'
     | '/terms'
     | '/admin/ai'
+    | '/admin/settings'
     | '/api/sitemap.xml'
     | '/series/$slug'
     | '/api/public/hooks/publish-scheduled-chapters'
@@ -262,6 +273,7 @@ export interface FileRouteTypes {
     | '/series'
     | '/terms'
     | '/admin/ai'
+    | '/admin/settings'
     | '/api/sitemap.xml'
     | '/series/$slug'
     | '/api/public/hooks/publish-scheduled-chapters'
@@ -409,6 +421,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiSitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/settings': {
+      id: '/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminSettingsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/ai': {
       id: '/admin/ai'
       path: '/ai'
@@ -435,10 +454,12 @@ declare module '@tanstack/react-router' {
 
 interface AdminRouteChildren {
   AdminAiRoute: typeof AdminAiRoute
+  AdminSettingsRoute: typeof AdminSettingsRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminAiRoute: AdminAiRoute,
+  AdminSettingsRoute: AdminSettingsRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
