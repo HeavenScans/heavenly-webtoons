@@ -10,7 +10,7 @@ import {
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { CelestialHero } from "@/components/CelestialHero";
 import { motion } from "framer-motion";
-import { useMemo, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -149,10 +149,6 @@ const faqs = [
 ];
 
 function Index() {
-  const trending = useMemo(() => mock(10, "trend"), []);
-  const popular = useMemo(() => mock(8, "pop"), []);
-  const latest = useMemo(() => mock(8, "latest"), []);
-  const favs = useMemo(() => mock(8, "fav"), []);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   return (
@@ -162,30 +158,6 @@ function Index() {
       <CelestialHero />
 
       <main className="relative mx-auto w-full max-w-7xl flex-1 px-4 sm:px-6 py-20 space-y-24">
-        {/* Trending carousel */}
-        <section>
-          <SectionHeader eyebrow="Tendances cosmiques" title="Top 10 cette semaine" icon={TrendingUp} href="/series" accent="#F5B041" />
-          <Carousel items={trending} withRank />
-        </section>
-
-        {/* Popular */}
-        <section>
-          <SectionHeader eyebrow="Populaire" title="L'écho des étoiles" icon={Flame} href="/series" accent="#6D4AFF" />
-          <Carousel items={popular} />
-        </section>
-
-        {/* Latest */}
-        <section>
-          <SectionHeader eyebrow="Dernières sorties" title="Fraîchement traduits" icon={Sparkles} href="/latest" accent="#4DA6FF" />
-          <Carousel items={latest} />
-        </section>
-
-        {/* Reader favorites */}
-        <section>
-          <SectionHeader eyebrow="Favoris lecteurs" title="Adorés par la communauté" icon={Heart} href="/series" accent="#F5B041" />
-          <Carousel items={favs} />
-        </section>
-
         {/* Genres */}
         <section>
           <SectionHeader eyebrow="Parcourir" title="Par genre" icon={BookOpen} accent="#4DA6FF" />
