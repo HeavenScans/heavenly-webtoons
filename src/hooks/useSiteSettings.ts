@@ -23,7 +23,7 @@ export function useSiteSettings() {
   const save = useCallback(async (key: string, value: Record<string, unknown>) => {
     const { error } = await supabase
       .from("site_settings")
-      .upsert({ key, value }, { onConflict: "key" });
+      .upsert({ key, value: value as never }, { onConflict: "key" });
     if (error) throw error;
     await load();
   }, [load]);
