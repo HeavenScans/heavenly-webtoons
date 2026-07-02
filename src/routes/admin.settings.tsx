@@ -270,3 +270,372 @@ function TranslationCard({ initial, onSave }: { initial: Translation; onSave: (v
     </Card>
   );
 }
+
+function SeoCard({ initial, onSave }: { initial: Seo; onSave: (v: Seo) => Promise<void> | void }) {
+  const { state, setState, dirty, saving, saved, save } = useDirtyForm<Seo>(
+    {
+      default_title: initial.default_title ?? "HeavenScans — Manga & Webtoons",
+      default_description: initial.default_description ?? "",
+      og_image_url: initial.og_image_url ?? "",
+      keywords: initial.keywords ?? "",
+      twitter_handle: initial.twitter_handle ?? "",
+    },
+    onSave,
+  );
+  return (
+    <Card icon={<Search className="h-5 w-5" />} title="SEO & partage social" description="Titres, descriptions et image OpenGraph par défaut.">
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Field label="Titre par défaut"><input className={inputCls} value={state.default_title} onChange={(e) => setState({ ...state, default_title: e.target.value })} /></Field>
+        <Field label="Handle Twitter (@…)"><input className={inputCls} value={state.twitter_handle} onChange={(e) => setState({ ...state, twitter_handle: e.target.value })} /></Field>
+        <Field label="Description par défaut"><textarea rows={2} className={inputCls} value={state.default_description} onChange={(e) => setState({ ...state, default_description: e.target.value })} /></Field>
+        <Field label="Image OG (URL absolue https)"><input className={inputCls} value={state.og_image_url} onChange={(e) => setState({ ...state, og_image_url: e.target.value })} /></Field>
+        <div className="sm:col-span-2"><Field label="Mots-clés (séparés par virgules)"><input className={inputCls} value={state.keywords} onChange={(e) => setState({ ...state, keywords: e.target.value })} /></Field></div>
+      </div>
+      <SaveBar dirty={dirty} saving={saving} saved={saved} onSave={save} />
+    </Card>
+  );
+}
+
+function SocialCard({ initial, onSave }: { initial: Social; onSave: (v: Social) => Promise<void> | void }) {
+  const { state, setState, dirty, saving, saved, save } = useDirtyForm<Social>(
+    { twitter: initial.twitter ?? "", instagram: initial.instagram ?? "", tiktok: initial.tiktok ?? "", youtube: initial.youtube ?? "", facebook: initial.facebook ?? "", reddit: initial.reddit ?? "" },
+    onSave,
+  );
+  const f = (k: keyof Social, label: string) => (
+    <Field label={label}><input className={inputCls} placeholder="https://…" value={state[k]} onChange={(e) => setState({ ...state, [k]: e.target.value })} /></Field>
+  );
+  return (
+    <Card icon={<Share2 className="h-5 w-5" />} title="Réseaux sociaux" description="Liens affichés dans le footer et le header.">
+      <div className="grid gap-4 sm:grid-cols-2">
+        {f("twitter", "Twitter / X")}
+        {f("instagram", "Instagram")}
+        {f("tiktok", "TikTok")}
+        {f("youtube", "YouTube")}
+        {f("facebook", "Facebook")}
+        {f("reddit", "Reddit")}
+      </div>
+      <SaveBar dirty={dirty} saving={saving} saved={saved} onSave={save} />
+    </Card>
+  );
+}
+
+function AnalyticsCard({ initial, onSave }: { initial: Analytics; onSave: (v: Analytics) => Promise<void> | void }) {
+  const { state, setState, dirty, saving, saved, save } = useDirtyForm<Analytics>(
+    { ga_measurement_id: initial.ga_measurement_id ?? "", plausible_domain: initial.plausible_domain ?? "", posthog_key: initial.posthog_key ?? "", cookie_banner: initial.cookie_banner ?? true },
+    onSave,
+  );
+  return (
+    <Card icon={<BarChart3 className="h-5 w-5" />} title="Analytics & tracking" description="Mesure d'audience et bannière cookies RGPD.">
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Field label="Google Analytics ID (G-…)"><input className={inputCls} value={state.ga_measurement_id} onChange={(e) => setState({ ...state, ga_measurement_id: e.target.value })} /></Field>
+        <Field label="Plausible domaine"><input className={inputCls} value={state.plausible_domain} onChange={(e) => setState({ ...state, plausible_domain: e.target.value })} /></Field>
+        <Field label="PostHog clé publique"><input className={inputCls} value={state.posthog_key} onChange={(e) => setState({ ...state, posthog_key: e.target.value })} /></Field>
+        <div className="pt-6"><Toggle label="Bannière cookies" description="Afficher le consentement RGPD." checked={state.cookie_banner} onChange={(v) => setState({ ...state, cookie_banner: v })} /></div>
+      </div>
+      <SaveBar dirty={dirty} saving={saving} saved={saved} onSave={save} />
+    </Card>
+  );
+}
+
+function IntegrationsCard({ initial, onSave }: { initial: Integrations; onSave: (v: Integrations) => Promise<void> | void }) {
+  const { state, setState, dirty, saving, saved, save } = useDirtyForm<Integrations>(
+    {
+      discord_webhook_url: initial.discord_webhook_url ?? "",
+      telegram_bot_token: initial.telegram_bot_token ?? "",
+      telegram_chat_id: initial.telegram_chat_id ?? "",
+      stripe_enabled: initial.stripe_enabled ?? false,
+      sendgrid_from: initial.sendgrid_from ?? "",
+    },
+    onSave,
+  );
+  return (
+    <Card icon={<Plug className="h-5 w-5" />} title="Intégrations plateformes" description="Webhooks, bots et services externes.">
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div className="sm:col-span-2"><Field label="Webhook Discord (annonce nouveau chapitre)"><input className={inputCls} placeholder="https://discord.com/api/webhooks/…" value={state.discord_webhook_url} onChange={(e) => setState({ ...state, discord_webhook_url: e.target.value })} /></Field></div>
+        <Field label="Bot Telegram token"><input className={inputCls} value={state.telegram_bot_token} onChange={(e) => setState({ ...state, telegram_bot_token: e.target.value })} /></Field>
+        <Field label="Telegram chat ID"><input className={inputCls} value={state.telegram_chat_id} onChange={(e) => setState({ ...state, telegram_chat_id: e.target.value })} /></Field>
+        <Field label="Expéditeur SendGrid / Resend"><input className={inputCls} placeholder="noreply@heavenscans.com" value={state.sendgrid_from} onChange={(e) => setState({ ...state, sendgrid_from: e.target.value })} /></Field>
+        <div className="pt-6"><Toggle label="Paiements Stripe" description="Activer le tunnel Premium." checked={state.stripe_enabled} onChange={(v) => setState({ ...state, stripe_enabled: v })} /></div>
+      </div>
+      <SaveBar dirty={dirty} saving={saving} saved={saved} onSave={save} />
+    </Card>
+  );
+}
+
+function NotificationsCard({ initial, onSave }: { initial: Notifications; onSave: (v: Notifications) => Promise<void> | void }) {
+  const { state, setState, dirty, saving, saved, save } = useDirtyForm<Notifications>(
+    {
+      email_new_chapter: initial.email_new_chapter ?? true,
+      email_weekly_digest: initial.email_weekly_digest ?? false,
+      push_enabled: initial.push_enabled ?? false,
+      discord_ping_new_chapter: initial.discord_ping_new_chapter ?? true,
+    },
+    onSave,
+  );
+  return (
+    <Card icon={<Bell className="h-5 w-5" />} title="Notifications" description="Emails et push envoyés aux lecteurs.">
+      <div className="grid gap-3 sm:grid-cols-2">
+        <Toggle label="Email nouveau chapitre" checked={state.email_new_chapter} onChange={(v) => setState({ ...state, email_new_chapter: v })} />
+        <Toggle label="Digest hebdomadaire" checked={state.email_weekly_digest} onChange={(v) => setState({ ...state, email_weekly_digest: v })} />
+        <Toggle label="Notifications push navigateur" checked={state.push_enabled} onChange={(v) => setState({ ...state, push_enabled: v })} />
+        <Toggle label="Ping Discord automatique" checked={state.discord_ping_new_chapter} onChange={(v) => setState({ ...state, discord_ping_new_chapter: v })} />
+      </div>
+      <SaveBar dirty={dirty} saving={saving} saved={saved} onSave={save} />
+    </Card>
+  );
+}
+
+function ContentCard({ initial, onSave }: { initial: Content; onSave: (v: Content) => Promise<void> | void }) {
+  const { state, setState, dirty, saving, saved, save } = useDirtyForm<Content>(
+    {
+      mature_content_allowed: initial.mature_content_allowed ?? true,
+      require_login_to_read: initial.require_login_to_read ?? false,
+      auto_moderate_comments: initial.auto_moderate_comments ?? true,
+      forbidden_words: initial.forbidden_words ?? "",
+      default_series_status: initial.default_series_status ?? "ongoing",
+    },
+    onSave,
+  );
+  return (
+    <Card icon={<ShieldCheck className="h-5 w-5" />} title="Politique de contenu" description="Modération et règles éditoriales.">
+      <div className="grid gap-3 sm:grid-cols-2">
+        <Toggle label="Autoriser contenu mature" checked={state.mature_content_allowed} onChange={(v) => setState({ ...state, mature_content_allowed: v })} />
+        <Toggle label="Lecture réservée aux membres" checked={state.require_login_to_read} onChange={(v) => setState({ ...state, require_login_to_read: v })} />
+        <Toggle label="Modération auto commentaires" checked={state.auto_moderate_comments} onChange={(v) => setState({ ...state, auto_moderate_comments: v })} />
+        <Field label="Statut par défaut nouvelles séries">
+          <select className={inputCls} value={state.default_series_status} onChange={(e) => setState({ ...state, default_series_status: e.target.value })}>
+            <option value="ongoing">En cours</option>
+            <option value="completed">Terminé</option>
+            <option value="hiatus">Pause</option>
+          </select>
+        </Field>
+        <div className="sm:col-span-2"><Field label="Mots bannis (séparés par virgules)"><textarea rows={2} className={inputCls} value={state.forbidden_words} onChange={(e) => setState({ ...state, forbidden_words: e.target.value })} /></Field></div>
+      </div>
+      <SaveBar dirty={dirty} saving={saving} saved={saved} onSave={save} />
+    </Card>
+  );
+}
+
+function ReaderCard({ initial, onSave }: { initial: Reader; onSave: (v: Reader) => Promise<void> | void }) {
+  const { state, setState, dirty, saving, saved, save } = useDirtyForm<Reader>(
+    {
+      default_direction: initial.default_direction ?? "vertical",
+      default_quality: initial.default_quality ?? "high",
+      preload_pages: Number(initial.preload_pages ?? 3),
+      infinite_scroll: initial.infinite_scroll ?? true,
+    },
+    onSave,
+  );
+  return (
+    <Card icon={<BookOpen className="h-5 w-5" />} title="Lecteur" description="Comportement par défaut du reader.">
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Field label="Direction par défaut">
+          <select className={inputCls} value={state.default_direction} onChange={(e) => setState({ ...state, default_direction: e.target.value })}>
+            <option value="vertical">Vertical (webtoon)</option>
+            <option value="ltr">Gauche → droite</option>
+            <option value="rtl">Droite → gauche (manga)</option>
+          </select>
+        </Field>
+        <Field label="Qualité images">
+          <select className={inputCls} value={state.default_quality} onChange={(e) => setState({ ...state, default_quality: e.target.value })}>
+            <option value="low">Basse (data saver)</option>
+            <option value="medium">Moyenne</option>
+            <option value="high">Haute</option>
+            <option value="original">Originale</option>
+          </select>
+        </Field>
+        <Field label="Pages préchargées"><input type="number" min="0" max="10" className={inputCls} value={state.preload_pages} onChange={(e) => setState({ ...state, preload_pages: Number(e.target.value) })} /></Field>
+        <div className="pt-6"><Toggle label="Scroll infini" checked={state.infinite_scroll} onChange={(v) => setState({ ...state, infinite_scroll: v })} /></div>
+      </div>
+      <SaveBar dirty={dirty} saving={saving} saved={saved} onSave={save} />
+    </Card>
+  );
+}
+
+function HomepageCard({ initial, onSave }: { initial: Homepage; onSave: (v: Homepage) => Promise<void> | void }) {
+  const { state, setState, dirty, saving, saved, save } = useDirtyForm<Homepage>(
+    {
+      show_hero: initial.show_hero ?? true,
+      show_genres: initial.show_genres ?? true,
+      show_popular: initial.show_popular ?? true,
+      show_latest: initial.show_latest ?? true,
+      show_favorites: initial.show_favorites ?? true,
+      show_stats: initial.show_stats ?? true,
+      show_faq: initial.show_faq ?? true,
+      show_discord: initial.show_discord ?? true,
+    },
+    onSave,
+  );
+  return (
+    <Card icon={<LayoutDashboard className="h-5 w-5" />} title="Sections de la homepage" description="Affiche ou masque chaque bloc de la page d'accueil.">
+      <div className="grid gap-3 sm:grid-cols-2">
+        <Toggle label="Hero céleste" checked={state.show_hero} onChange={(v) => setState({ ...state, show_hero: v })} />
+        <Toggle label="Genres" checked={state.show_genres} onChange={(v) => setState({ ...state, show_genres: v })} />
+        <Toggle label="Populaires cette semaine" checked={state.show_popular} onChange={(v) => setState({ ...state, show_popular: v })} />
+        <Toggle label="Derniers chapitres" checked={state.show_latest} onChange={(v) => setState({ ...state, show_latest: v })} />
+        <Toggle label="Favoris des lecteurs" checked={state.show_favorites} onChange={(v) => setState({ ...state, show_favorites: v })} />
+        <Toggle label="Stats communauté" checked={state.show_stats} onChange={(v) => setState({ ...state, show_stats: v })} />
+        <Toggle label="FAQ" checked={state.show_faq} onChange={(v) => setState({ ...state, show_faq: v })} />
+        <Toggle label="Bloc Discord" checked={state.show_discord} onChange={(v) => setState({ ...state, show_discord: v })} />
+      </div>
+      <SaveBar dirty={dirty} saving={saving} saved={saved} onSave={save} />
+    </Card>
+  );
+}
+
+function AnnouncementCard({ initial, onSave }: { initial: Announcement; onSave: (v: Announcement) => Promise<void> | void }) {
+  const { state, setState, dirty, saving, saved, save } = useDirtyForm<Announcement>(
+    {
+      enabled: initial.enabled ?? false,
+      message: initial.message ?? "",
+      level: initial.level ?? "info",
+      link_url: initial.link_url ?? "",
+      link_label: initial.link_label ?? "",
+    },
+    onSave,
+  );
+  return (
+    <Card icon={<Megaphone className="h-5 w-5" />} title="Bannière d'annonce" description="Message global affiché en haut du site.">
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div className="pt-1"><Toggle label="Activer la bannière" checked={state.enabled} onChange={(v) => setState({ ...state, enabled: v })} /></div>
+        <Field label="Niveau">
+          <select className={inputCls} value={state.level} onChange={(e) => setState({ ...state, level: e.target.value })}>
+            <option value="info">Info</option>
+            <option value="success">Succès</option>
+            <option value="warning">Attention</option>
+            <option value="danger">Urgent</option>
+          </select>
+        </Field>
+        <div className="sm:col-span-2"><Field label="Message"><input className={inputCls} value={state.message} onChange={(e) => setState({ ...state, message: e.target.value })} /></Field></div>
+        <Field label="Lien"><input className={inputCls} value={state.link_url} onChange={(e) => setState({ ...state, link_url: e.target.value })} /></Field>
+        <Field label="Libellé du lien"><input className={inputCls} value={state.link_label} onChange={(e) => setState({ ...state, link_label: e.target.value })} /></Field>
+      </div>
+      <SaveBar dirty={dirty} saving={saving} saved={saved} onSave={save} />
+    </Card>
+  );
+}
+
+function ThemeCard({ initial, onSave }: { initial: Theme; onSave: (v: Theme) => Promise<void> | void }) {
+  const { state, setState, dirty, saving, saved, save } = useDirtyForm<Theme>(
+    { primary: initial.primary ?? "#6D4AFF", accent: initial.accent ?? "#4DA6FF", background: initial.background ?? "#050816", gold: initial.gold ?? "#F5B041" },
+    onSave,
+  );
+  const color = (k: keyof Theme, label: string) => (
+    <Field label={label}>
+      <div className="flex items-center gap-2">
+        <input type="color" className="h-10 w-14 cursor-pointer rounded border border-border bg-background" value={state[k]} onChange={(e) => setState({ ...state, [k]: e.target.value })} />
+        <input className={inputCls} value={state[k]} onChange={(e) => setState({ ...state, [k]: e.target.value })} />
+      </div>
+    </Field>
+  );
+  return (
+    <Card icon={<Palette className="h-5 w-5" />} title="Thème & couleurs" description="Palette céleste utilisée sur tout le site.">
+      <div className="grid gap-4 sm:grid-cols-2">
+        {color("primary", "Violet royal")}
+        {color("accent", "Bleu céleste")}
+        {color("background", "Fond profond")}
+        {color("gold", "Or divin")}
+      </div>
+      <SaveBar dirty={dirty} saving={saving} saved={saved} onSave={save} />
+    </Card>
+  );
+}
+
+function LegalCard({ initial, onSave }: { initial: Legal; onSave: (v: Legal) => Promise<void> | void }) {
+  const { state, setState, dirty, saving, saved, save } = useDirtyForm<Legal>(
+    {
+      terms_url: initial.terms_url ?? "/terms",
+      privacy_url: initial.privacy_url ?? "/privacy",
+      dmca_email: initial.dmca_email ?? "",
+      company_name: initial.company_name ?? "",
+      company_address: initial.company_address ?? "",
+    },
+    onSave,
+  );
+  return (
+    <Card icon={<Scale className="h-5 w-5" />} title="Mentions légales" description="Infos entreprise et pages légales.">
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Field label="Nom légal"><input className={inputCls} value={state.company_name} onChange={(e) => setState({ ...state, company_name: e.target.value })} /></Field>
+        <Field label="Email DMCA"><input className={inputCls} value={state.dmca_email} onChange={(e) => setState({ ...state, dmca_email: e.target.value })} /></Field>
+        <Field label="URL Conditions"><input className={inputCls} value={state.terms_url} onChange={(e) => setState({ ...state, terms_url: e.target.value })} /></Field>
+        <Field label="URL Confidentialité"><input className={inputCls} value={state.privacy_url} onChange={(e) => setState({ ...state, privacy_url: e.target.value })} /></Field>
+        <div className="sm:col-span-2"><Field label="Adresse"><textarea rows={2} className={inputCls} value={state.company_address} onChange={(e) => setState({ ...state, company_address: e.target.value })} /></Field></div>
+      </div>
+      <SaveBar dirty={dirty} saving={saving} saved={saved} onSave={save} />
+    </Card>
+  );
+}
+
+function SecurityCard({ initial, onSave }: { initial: Security; onSave: (v: Security) => Promise<void> | void }) {
+  const { state, setState, dirty, saving, saved, save } = useDirtyForm<Security>(
+    {
+      rate_limit_rpm: Number(initial.rate_limit_rpm ?? 120),
+      max_upload_mb: Number(initial.max_upload_mb ?? 25),
+      block_vpn: initial.block_vpn ?? false,
+      require_email_verification: initial.require_email_verification ?? true,
+    },
+    onSave,
+  );
+  return (
+    <Card icon={<Gauge className="h-5 w-5" />} title="Sécurité & limites" description="Rate-limit, uploads et vérifications.">
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Field label="Requêtes / minute / IP"><input type="number" min="10" className={inputCls} value={state.rate_limit_rpm} onChange={(e) => setState({ ...state, rate_limit_rpm: Number(e.target.value) })} /></Field>
+        <Field label="Upload max (Mo)"><input type="number" min="1" className={inputCls} value={state.max_upload_mb} onChange={(e) => setState({ ...state, max_upload_mb: Number(e.target.value) })} /></Field>
+        <Toggle label="Bloquer VPN/Proxy" checked={state.block_vpn} onChange={(v) => setState({ ...state, block_vpn: v })} />
+        <Toggle label="Vérification email obligatoire" checked={state.require_email_verification} onChange={(v) => setState({ ...state, require_email_verification: v })} />
+      </div>
+      <SaveBar dirty={dirty} saving={saving} saved={saved} onSave={save} />
+    </Card>
+  );
+}
+
+function StorageCard({ initial, onSave }: { initial: Storage; onSave: (v: Storage) => Promise<void> | void }) {
+  const { state, setState, dirty, saving, saved, save } = useDirtyForm<Storage>(
+    {
+      covers_bucket: initial.covers_bucket ?? "covers",
+      pages_bucket: initial.pages_bucket ?? "chapter-pages",
+      cdn_url: initial.cdn_url ?? "",
+      max_pages_per_chapter: Number(initial.max_pages_per_chapter ?? 200),
+    },
+    onSave,
+  );
+  return (
+    <Card icon={<HardDrive className="h-5 w-5" />} title="Stockage & CDN" description="Buckets et diffusion des images.">
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Field label="Bucket couvertures"><input className={inputCls} value={state.covers_bucket} onChange={(e) => setState({ ...state, covers_bucket: e.target.value })} /></Field>
+        <Field label="Bucket pages chapitres"><input className={inputCls} value={state.pages_bucket} onChange={(e) => setState({ ...state, pages_bucket: e.target.value })} /></Field>
+        <Field label="URL CDN (optionnel)"><input className={inputCls} placeholder="https://cdn.heavenscans.com" value={state.cdn_url} onChange={(e) => setState({ ...state, cdn_url: e.target.value })} /></Field>
+        <Field label="Pages max / chapitre"><input type="number" min="1" className={inputCls} value={state.max_pages_per_chapter} onChange={(e) => setState({ ...state, max_pages_per_chapter: Number(e.target.value) })} /></Field>
+      </div>
+      <SaveBar dirty={dirty} saving={saving} saved={saved} onSave={save} />
+    </Card>
+  );
+}
+
+function DangerZone() {
+  const [confirming, setConfirming] = useState(false);
+  return (
+    <section className="rounded-2xl border border-destructive/40 bg-destructive/5 p-6">
+      <header className="mb-4 flex items-start gap-3">
+        <div className="grid h-10 w-10 place-items-center rounded-xl bg-destructive/20 text-destructive"><AlertTriangle className="h-5 w-5" /></div>
+        <div>
+          <h2 className="text-lg font-bold text-destructive">Zone dangereuse</h2>
+          <p className="text-sm text-muted-foreground">Actions irréversibles. Réfléchis à deux fois.</p>
+        </div>
+      </header>
+      <div className="flex flex-wrap gap-3">
+        <button type="button" className="rounded-lg border border-destructive/50 px-3 py-2 text-sm font-semibold text-destructive hover:bg-destructive/10" onClick={() => alert("Cache vidé (à brancher)") }>Vider le cache</button>
+        <button type="button" className="rounded-lg border border-destructive/50 px-3 py-2 text-sm font-semibold text-destructive hover:bg-destructive/10" onClick={() => alert("Réindexation lancée (à brancher)")}>Réindexer la recherche</button>
+        {!confirming ? (
+          <button type="button" onClick={() => setConfirming(true)} className="rounded-lg bg-destructive/90 px-3 py-2 text-sm font-bold text-white">Réinitialiser tous les paramètres</button>
+        ) : (
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-destructive font-semibold">Confirmer ?</span>
+            <button type="button" onClick={() => setConfirming(false)} className="rounded-lg border border-border px-3 py-1.5 text-xs">Annuler</button>
+            <button type="button" onClick={() => { alert("Reset (à brancher)"); setConfirming(false); }} className="rounded-lg bg-destructive px-3 py-1.5 text-xs font-bold text-white">Oui, réinitialiser</button>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
