@@ -5,7 +5,12 @@ import { Footer } from "@/components/Footer";
 import { useAuth } from "@/hooks/useAuth";
 import { useRole } from "@/hooks/useRole";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
-import { Loader2, ShieldAlert, Save, Settings2, Sparkles, Wrench, CreditCard, Languages, ArrowLeft, CheckCircle2 } from "lucide-react";
+import {
+  Loader2, ShieldAlert, Save, Settings2, Sparkles, Wrench, CreditCard, Languages,
+  ArrowLeft, CheckCircle2, Search, Share2, BarChart3, Plug, Mail, ShieldCheck,
+  Scale, LayoutDashboard, Megaphone, Palette, Gauge, HardDrive, AlertTriangle,
+  BookOpen, Bell,
+} from "lucide-react";
 
 export const Route = createFileRoute("/admin/settings")({
   head: () => ({ meta: [{ title: "Paramètres — Admin HeavenScans" }, { name: "robots", content: "noindex" }] }),
@@ -16,6 +21,19 @@ type Branding = { site_name: string; tagline: string; contact_email: string; dis
 type Features = { maintenance_mode: boolean; allow_signups: boolean; comments_enabled: boolean; ratings_enabled: boolean; auto_publish_bot: boolean };
 type Premium = { reader_price: number; premium_price: number; ultimate_price: number; currency: string };
 type Translation = { pack_starter_credits: number; pack_starter_price: number; pack_boost_credits: number; pack_boost_price: number; pack_max_credits: number; pack_max_price: number };
+type Seo = { default_title: string; default_description: string; og_image_url: string; keywords: string; twitter_handle: string };
+type Social = { twitter: string; instagram: string; tiktok: string; youtube: string; facebook: string; reddit: string };
+type Analytics = { ga_measurement_id: string; plausible_domain: string; posthog_key: string; cookie_banner: boolean };
+type Integrations = { discord_webhook_url: string; telegram_bot_token: string; telegram_chat_id: string; stripe_enabled: boolean; sendgrid_from: string };
+type Notifications = { email_new_chapter: boolean; email_weekly_digest: boolean; push_enabled: boolean; discord_ping_new_chapter: boolean };
+type Content = { mature_content_allowed: boolean; require_login_to_read: boolean; auto_moderate_comments: boolean; forbidden_words: string; default_series_status: string };
+type Legal = { terms_url: string; privacy_url: string; dmca_email: string; company_name: string; company_address: string };
+type Homepage = { show_hero: boolean; show_genres: boolean; show_popular: boolean; show_latest: boolean; show_favorites: boolean; show_stats: boolean; show_faq: boolean; show_discord: boolean };
+type Announcement = { enabled: boolean; message: string; level: string; link_url: string; link_label: string };
+type Theme = { primary: string; accent: string; background: string; gold: string };
+type Reader = { default_direction: string; default_quality: string; preload_pages: number; infinite_scroll: boolean };
+type Security = { rate_limit_rpm: number; max_upload_mb: number; block_vpn: boolean; require_email_verification: boolean };
+type Storage = { covers_bucket: string; pages_bucket: string; cdn_url: string; max_pages_per_chapter: number };
 
 function AdminSettingsPage() {
   const navigate = useNavigate();
@@ -59,9 +77,23 @@ function AdminSettingsPage() {
 
         <div className="space-y-6">
           <BrandingCard initial={(settings.branding ?? {}) as unknown as Branding} onSave={(v) => save("branding", v as unknown as Record<string, unknown>)} />
+          <SeoCard initial={(settings.seo ?? {}) as unknown as Seo} onSave={(v) => save("seo", v as unknown as Record<string, unknown>)} />
+          <SocialCard initial={(settings.social ?? {}) as unknown as Social} onSave={(v) => save("social", v as unknown as Record<string, unknown>)} />
+          <AnalyticsCard initial={(settings.analytics ?? {}) as unknown as Analytics} onSave={(v) => save("analytics", v as unknown as Record<string, unknown>)} />
+          <IntegrationsCard initial={(settings.integrations ?? {}) as unknown as Integrations} onSave={(v) => save("integrations", v as unknown as Record<string, unknown>)} />
+          <NotificationsCard initial={(settings.notifications ?? {}) as unknown as Notifications} onSave={(v) => save("notifications", v as unknown as Record<string, unknown>)} />
+          <ContentCard initial={(settings.content ?? {}) as unknown as Content} onSave={(v) => save("content", v as unknown as Record<string, unknown>)} />
+          <ReaderCard initial={(settings.reader ?? {}) as unknown as Reader} onSave={(v) => save("reader", v as unknown as Record<string, unknown>)} />
+          <HomepageCard initial={(settings.homepage ?? {}) as unknown as Homepage} onSave={(v) => save("homepage", v as unknown as Record<string, unknown>)} />
+          <AnnouncementCard initial={(settings.announcement ?? {}) as unknown as Announcement} onSave={(v) => save("announcement", v as unknown as Record<string, unknown>)} />
+          <ThemeCard initial={(settings.theme ?? {}) as unknown as Theme} onSave={(v) => save("theme", v as unknown as Record<string, unknown>)} />
+          <LegalCard initial={(settings.legal ?? {}) as unknown as Legal} onSave={(v) => save("legal", v as unknown as Record<string, unknown>)} />
+          <SecurityCard initial={(settings.security ?? {}) as unknown as Security} onSave={(v) => save("security", v as unknown as Record<string, unknown>)} />
+          <StorageCard initial={(settings.storage ?? {}) as unknown as Storage} onSave={(v) => save("storage", v as unknown as Record<string, unknown>)} />
           <FeaturesCard initial={(settings.features ?? {}) as unknown as Features} onSave={(v) => save("features", v as unknown as Record<string, unknown>)} />
           <PremiumCard initial={(settings.premium ?? {}) as unknown as Premium} onSave={(v) => save("premium", v as unknown as Record<string, unknown>)} />
           <TranslationCard initial={(settings.translation ?? {}) as unknown as Translation} onSave={(v) => save("translation", v as unknown as Record<string, unknown>)} />
+          <DangerZone />
         </div>
       </main>
       <Footer />
