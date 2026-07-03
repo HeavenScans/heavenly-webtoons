@@ -641,3 +641,168 @@ function DangerZone() {
     </section>
   );
 }
+
+type AdminRow = {
+  user_id: string;
+  role: "admin" | "super_admin" | "team" | "user";
+  username: string | null;
+  display_name: string | null;
+  avatar_url: string | null;
+};
+
+function AdminsCard({ currentUserId }: { currentUserId: string | null }) {
+  const [rows, setRows] = useState<AdminRow[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState<Array<{ id: string; username: string | null; display_name: string | null; avatar_url: string | null }>>([]);
+  const [searching, setSearching] = useState(false);
+  const [msg, setMsg] = useState<string | null>(null);
+
+  const load = async () => {
+    setLoading(true);
+    const { data: roles } = await supabase
+      .from("user_roles")
+      .select("user_id, role")
+      .in("role", ["admin", "super_admin"]);
+    const ids = Array.from(new Set((roles ?? []).map((r) => r.user_id)));
+    let profilesById = new Map<string, { username: string | null; display_name: string | null; avatar_url: string | null }>();
+    if (ids.length) {
+      const { data: profs } = await supabase
+        .from("profiles")
+        .select("id, username, display_name, avatar_url")
+        .in("id", ids);
+      (profs ?? []).forEach((p) => profilesById.set(p.id as string, {
+        username: (p.username as string | null) ?? null,
+        display_name: (p.display_name as string | null) ?? null,
+        avatar_url: (p.avatar_url as string | null) ?? null,
+      }));
+    }
+    setRows(((roles ?? []) as Array<{ user_id: string; role: AdminRow["role"] }>).map((r) => ({
+      user_id: r.user_id,
+      role: r.role,
+      username: profilesById.get(r.user_id)?.username ?? null,
+      display_name: profilesById.get(r.user_id)?.display_name ?? null,
+      avatar_url: profilesById.get(r.user_id)?.avatar_url ?? null,
+    })));
+    setLoading(false);
+  };
+
+  useEffect(() => { load(); }, []);
+
+  const search = async (q: string) => {
+    setQuery(q);
+    if (q.trim().length < 2) { setResults([]); return; }
+    setSearching(true);
+    const { data } = await supabase
+      .from("profiles")
+      .select("id, username, display_name, avatar_url")
+      .or(`username.ilike.%${q}%,display_name.ilike.%${q}%`)
+      .limit(8);
+    setResults((data ?? []) as typeof results);
+    setSearching(false);
+  };
+
+  const grant = async (userId: string, role: "admin" | "super_admin") => {
+    setMsg(null);
+    const { error } = await supabase.from("user_roles").insert({ user_id: userId, role });
+    if (error) { setMsg(error.message); return; }
+    setMsg(`Rôle ${role} attribué.`);
+    setQuery(""); setResults([]);
+    await load();
+  };
+
+  const revoke = async (userId: string, role: AdminRow["role"]) => {
+    if (userId === currentUserId) {
+      if (!confirm("Retirer ton propre rôle ? Tu perdras l'accès admin.")) return;
+    }
+    setMsg(null);
+    const { error } = await supabase.from("user_roles").delete().eq("user_id", userId).eq("role", role);
+    if (error) { setMsg(error.message); return; }
+    setMsg("Rôle retiré.");
+    await load();
+  };
+
+  return (
+    <Card icon={<ShieldCheck className="h-5 w-5" />} title="Administrateurs" description="Attribue ou retire les rôles admin et super_admin.">
+      <div className="space-y-5">
+        <div>
+          <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-muted-foreground">Ajouter un administrateur</label>
+          <div className="relative">
+            <div className="flex items-center gap-2 rounded-lg border border-border bg-background px-3">
+              <Search className="h-4 w-4 text-muted-foreground" />
+              <input
+                value={query}
+                onChange={(e) => search(e.target.value)}
+                placeholder="Rechercher par pseudo ou nom d'affichage…"
+                className="flex-1 bg-transparent py-2.5 text-sm outline-none"
+              />
+              {searching && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
+            </div>
+            {results.length > 0 && (
+              <div className="mt-2 max-h-72 overflow-y-auto rounded-lg border border-border bg-card divide-y divide-border">
+                {results.map((p) => (
+                  <div key={p.id} className="flex items-center gap-3 p-2">
+                    <div className="grid h-8 w-8 place-items-center rounded-full bg-muted text-xs font-bold">
+                      {p.avatar_url ? <img src={p.avatar_url} alt="" className="h-full w-full rounded-full object-cover" /> : (p.username ?? "?").charAt(0).toUpperCase()}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="truncate text-sm font-semibold">{p.display_name || p.username || "Sans nom"}</div>
+                      <div className="truncate text-xs text-muted-foreground">@{p.username ?? "—"} · <code className="text-[10px]">{p.id.slice(0, 8)}</code></div>
+                    </div>
+                    <button type="button" onClick={() => grant(p.id, "admin")} className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 text-xs font-semibold hover:border-primary hover:text-primary">
+                      <UserPlus className="h-3 w-3" /> Admin
+                    </button>
+                    <button type="button" onClick={() => grant(p.id, "super_admin")} className="inline-flex items-center gap-1 rounded-md bg-primary px-2 py-1 text-xs font-bold text-primary-foreground">
+                      <Crown className="h-3 w-3" /> Super
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+            {query.trim().length >= 2 && !searching && results.length === 0 && (
+              <p className="mt-2 text-xs text-muted-foreground">Aucun profil trouvé. L'utilisateur doit d'abord créer un compte.</p>
+            )}
+          </div>
+        </div>
+
+        {msg && <div className="rounded-lg border border-border bg-muted/50 px-3 py-2 text-xs">{msg}</div>}
+
+        <div>
+          <div className="mb-2 flex items-center justify-between">
+            <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Admins actuels ({rows.length})</label>
+            <button type="button" onClick={load} className="text-xs text-muted-foreground hover:text-foreground">Rafraîchir</button>
+          </div>
+          {loading ? (
+            <div className="grid place-items-center py-6"><Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /></div>
+          ) : rows.length === 0 ? (
+            <p className="text-sm text-muted-foreground">Aucun administrateur enregistré.</p>
+          ) : (
+            <div className="divide-y divide-border rounded-lg border border-border">
+              {rows.map((r) => (
+                <div key={`${r.user_id}-${r.role}`} className="flex items-center gap-3 p-3">
+                  <div className="grid h-9 w-9 place-items-center rounded-full bg-muted text-xs font-bold overflow-hidden">
+                    {r.avatar_url ? <img src={r.avatar_url} alt="" className="h-full w-full object-cover" /> : (r.username ?? "?").charAt(0).toUpperCase()}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="truncate text-sm font-semibold">
+                      {r.display_name || r.username || "Sans nom"}
+                      {r.user_id === currentUserId && <span className="ml-2 text-[10px] text-muted-foreground">(toi)</span>}
+                    </div>
+                    <div className="truncate text-xs text-muted-foreground">@{r.username ?? "—"}</div>
+                  </div>
+                  <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${r.role === "super_admin" ? "bg-primary/15 text-primary" : "bg-muted text-foreground"}`}>
+                    {r.role === "super_admin" ? <Crown className="h-3 w-3" /> : <ShieldCheck className="h-3 w-3" />}
+                    {r.role}
+                  </span>
+                  <button type="button" onClick={() => revoke(r.user_id, r.role)} className="grid h-8 w-8 place-items-center rounded-md text-muted-foreground hover:bg-destructive/10 hover:text-destructive" title="Retirer">
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </Card>
+  );
+}
