@@ -45,7 +45,7 @@ function slugify(s: string) {
 function AdminPage() {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
-  const { isAdmin, isTeam, loading: roleLoading } = useRole();
+  const { isAdmin, loading: roleLoading } = useRole();
   const [list, setList] = useState<SeriesRow[]>([]);
   const [selected, setSelected] = useState<SeriesRow | null>(null);
   const [chapters, setChapters] = useState<ChapterRow[]>([]);
@@ -63,8 +63,8 @@ function AdminPage() {
   };
 
   useEffect(() => {
-    if (isTeam) refresh();
-  }, [isTeam]);
+    if (isAdmin) refresh();
+  }, [isAdmin]);
 
   const loadChapters = async (sid: string) => {
     const { data } = await supabase
@@ -84,14 +84,14 @@ function AdminPage() {
     return <div className="min-h-screen grid place-items-center"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>;
   }
 
-  if (!isTeam) {
+  if (!isAdmin) {
     return (
       <div className="min-h-screen flex flex-col">
         <Header />
         <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-20 text-center">
           <ShieldAlert className="mx-auto h-12 w-12 text-destructive" />
           <h1 className="mt-4 text-3xl font-black">Accès réservé</h1>
-          <p className="mt-2 text-muted-foreground">Cette zone est réservée aux administrateurs et à l'équipe HeavenScans.</p>
+          <p className="mt-2 text-muted-foreground">Cette zone est réservée aux comptes disposant du rôle <strong>admin</strong> ou <strong>super_admin</strong>.</p>
           <p className="mt-4 text-xs text-muted-foreground">Ton ID utilisateur : <code className="rounded bg-muted px-2 py-0.5">{user?.id}</code></p>
           <Link to="/" className="mt-6 inline-block text-primary">← Retour à l'accueil</Link>
         </main>
