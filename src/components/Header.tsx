@@ -17,7 +17,7 @@ export function Header() {
   const [recent, setRecent] = useState<string[]>([]);
   const { active: isPremium, tier, hydrated, deactivate } = usePremium();
   const { user, loading: authLoading } = useAuth();
-  const { isTeam } = useRole();
+  const { isAdmin } = useRole();
   const searchRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -138,9 +138,9 @@ export function Header() {
           )}
           {!authLoading && (user ? (
             <>
-            {isTeam && (
-              <Link to="/admin" className="inline-flex items-center gap-1 rounded-lg border border-[color:var(--neon-blue)]/50 px-2.5 py-1.5 text-xs font-bold text-[color:var(--neon-blue)] hover:bg-[color:var(--neon-blue)]/10 transition-colors" title="Back-office">
-                <ShieldCheck className="h-3 w-3" /> Admin
+            {isAdmin && (
+              <Link to="/admin" className="inline-flex items-center gap-1 rounded-lg border border-[color:var(--neon-blue)]/50 px-2.5 py-1.5 text-xs font-bold text-[color:var(--neon-blue)] hover:bg-[color:var(--neon-blue)]/10 transition-colors" title="Panneau d'administration">
+                <ShieldCheck className="h-3 w-3" /> Administration
               </Link>
             )}
             <Link to="/profile" className="inline-flex items-center gap-1.5 rounded-lg bg-secondary px-2.5 py-1.5 text-xs font-bold hover:bg-muted transition-colors" title="Mon profil">
