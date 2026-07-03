@@ -9,8 +9,9 @@ import {
   Loader2, ShieldAlert, Save, Settings2, Sparkles, Wrench, CreditCard, Languages,
   ArrowLeft, CheckCircle2, Search, Share2, BarChart3, Plug, Mail, ShieldCheck,
   Scale, LayoutDashboard, Megaphone, Palette, Gauge, HardDrive, AlertTriangle,
-  BookOpen, Bell,
+  BookOpen, Bell, UserPlus, Trash2, Crown,
 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/admin/settings")({
   head: () => ({ meta: [{ title: "Paramètres — Admin HeavenScans" }, { name: "robots", content: "noindex" }] }),
@@ -93,6 +94,7 @@ function AdminSettingsPage() {
           <FeaturesCard initial={(settings.features ?? {}) as unknown as Features} onSave={(v) => save("features", v as unknown as Record<string, unknown>)} />
           <PremiumCard initial={(settings.premium ?? {}) as unknown as Premium} onSave={(v) => save("premium", v as unknown as Record<string, unknown>)} />
           <TranslationCard initial={(settings.translation ?? {}) as unknown as Translation} onSave={(v) => save("translation", v as unknown as Record<string, unknown>)} />
+          <AdminsCard currentUserId={user?.id ?? null} />
           <DangerZone />
         </div>
       </main>
