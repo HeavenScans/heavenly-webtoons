@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Search, Menu, X, Clock, Trash2, Crown, Heart, User as UserIcon, LogIn, ShieldCheck } from "lucide-react";
+import { Search, Menu, X, Clock, Trash2, Crown, Heart, User as UserIcon, LogIn, ShieldCheck, Settings2 } from "lucide-react";
 import logoUrl from "@/assets/logo.png";
 import { useState, useEffect, useRef, useMemo } from "react";
 import { series, allGenres } from "@/lib/series";
