@@ -95,7 +95,9 @@ function AdminSettingsPage() {
           <FeaturesCard initial={(settings.features ?? {}) as unknown as Features} onSave={(v) => save("features", v as unknown as Record<string, unknown>)} />
           <PremiumCard initial={(settings.premium ?? {}) as unknown as Premium} onSave={(v) => save("premium", v as unknown as Record<string, unknown>)} />
           <TranslationCard initial={(settings.translation ?? {}) as unknown as Translation} onSave={(v) => save("translation", v as unknown as Record<string, unknown>)} />
-          <AdminsCard currentUserId={user?.id ?? null} />
+          <div id="administrateurs">
+            <AdminsCard currentUserId={user?.id ?? null} />
+          </div>
           <DangerZone />
         </div>
       </main>

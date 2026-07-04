@@ -296,6 +296,12 @@ export function Header() {
           <Link to="/latest" onClick={() => setOpen(false)}>Derniers chapitres</Link>
           <Link to="/library" onClick={() => setOpen(false)}>Ma bibliothèque</Link>
           <Link to="/premium" onClick={() => setOpen(false)}>Premium</Link>
+          {isAdmin && (
+            <Link to="/admin" onClick={() => setOpen(false)} className="inline-flex items-center gap-1.5 text-[color:var(--neon-blue)]"><ShieldCheck className="h-4 w-4" /> Administration</Link>
+          )}
+          {isSuperAdmin && (
+            <Link to="/admin/settings" onClick={() => setOpen(false)} className="inline-flex items-center gap-1.5 text-[color:var(--neon-blue)]"><Settings2 className="h-4 w-4" /> Paramètres admin</Link>
+          )}
           {user ? (
             <Link to="/profile" onClick={() => setOpen(false)} className="inline-flex items-center gap-1.5"><UserIcon className="h-4 w-4" /> Mon profil</Link>
           ) : (
