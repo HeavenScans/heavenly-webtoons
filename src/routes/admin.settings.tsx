@@ -6,7 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useRole } from "@/hooks/useRole";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import {
-  Loader2, ShieldAlert, Save, Settings2, Sparkles, Wrench, CreditCard, Languages,
+  Loader2, ShieldAlert, Save, Settings2, Sparkles, Wrench, CreditCard, Languages, Info,
   ArrowLeft, CheckCircle2, Search, Share2, BarChart3, Plug, Mail, ShieldCheck,
   Scale, LayoutDashboard, Megaphone, Palette, Gauge, HardDrive, AlertTriangle,
   BookOpen, Bell, UserPlus, Trash2, Crown,
@@ -76,6 +76,7 @@ function AdminSettingsPage() {
           </div>
         </div>
 
+        <AdminGuideCard />
         <div className="space-y-6">
           <BrandingCard initial={(settings.branding ?? {}) as unknown as Branding} onSave={(v) => save("branding", v as unknown as Record<string, unknown>)} />
           <SeoCard initial={(settings.seo ?? {}) as unknown as Seo} onSave={(v) => save("seo", v as unknown as Record<string, unknown>)} />
