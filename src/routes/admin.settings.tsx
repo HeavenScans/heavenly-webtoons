@@ -6,7 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useRole } from "@/hooks/useRole";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import {
-  Loader2, ShieldAlert, Save, Settings2, Sparkles, Wrench, CreditCard, Languages,
+  Loader2, ShieldAlert, Save, Settings2, Sparkles, Wrench, CreditCard, Languages, Info,
   ArrowLeft, CheckCircle2, Search, Share2, BarChart3, Plug, Mail, ShieldCheck,
   Scale, LayoutDashboard, Megaphone, Palette, Gauge, HardDrive, AlertTriangle,
   BookOpen, Bell, UserPlus, Trash2, Crown,
@@ -76,6 +76,7 @@ function AdminSettingsPage() {
           </div>
         </div>
 
+        <AdminGuideCard />
         <div className="space-y-6">
           <BrandingCard initial={(settings.branding ?? {}) as unknown as Branding} onSave={(v) => save("branding", v as unknown as Record<string, unknown>)} />
           <SeoCard initial={(settings.seo ?? {}) as unknown as Seo} onSave={(v) => save("seo", v as unknown as Record<string, unknown>)} />
@@ -100,6 +101,46 @@ function AdminSettingsPage() {
       </main>
       <Footer />
     </div>
+  );
+}
+
+function AdminGuideCard() {
+  return (
+    <section className="rounded-2xl border border-primary/30 bg-primary/5 p-6">
+      <header className="mb-4 flex items-start gap-3">
+        <div className="grid h-10 w-10 place-items-center rounded-xl bg-primary/15 text-primary">
+          <Info className="h-5 w-5" />
+        </div>
+        <div>
+          <h2 className="text-lg font-bold">Guide rapide — Gestion des administrateurs</h2>
+          <p className="text-sm text-muted-foreground">Comment ajouter ou retirer un admin en 3 étapes.</p>
+        </div>
+      </header>
+      <ol className="grid gap-4 sm:grid-cols-3">
+        <li className="flex gap-3 rounded-xl border border-border bg-card p-4">
+          <span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">1</span>
+          <div>
+            <p className="text-sm font-semibold">Descends jusqu'en bas</p>
+            <p className="text-xs text-muted-foreground">Fais défiler la page jusqu'à la carte <strong className="text-foreground">Administrateurs</strong>.</p>
+          </div>
+        </li>
+        <li className="flex gap-3 rounded-xl border border-border bg-card p-4">
+          <span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">2</span>
+          <div>
+            <p className="text-sm font-semibold">Recherche l'utilisateur</p>
+            <p className="text-xs text-muted-foreground">Tape son pseudo dans le champ de recherche. L'utilisateur doit déjà avoir un compte.</p>
+          </div>
+        </li>
+        <li className="flex gap-3 rounded-xl border border-border bg-card p-4">
+          <span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">3</span>
+          <div>
+            <p className="text-sm font-semibold">Choisis le rôle</p>
+            <p className="text-xs text-muted-foreground">Clique sur <strong className="text-foreground">Admin</strong> <ShieldCheck className="inline h-3 w-3" /> ou <strong className="text-foreground">Super</strong> <Crown className="inline h-3 w-3" /> pour l'attribuer.</p>
+          </div>
+        </li>
+      </ol>
+      <p className="mt-4 text-xs text-muted-foreground">Pour retirer un rôle, utilise la corbeille à droite de la ligne dans la liste des admins actuels.</p>
+    </section>
   );
 }
 
