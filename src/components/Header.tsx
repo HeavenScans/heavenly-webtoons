@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Search, Menu, X, Clock, Trash2, Crown, Heart, User as UserIcon, LogIn, ShieldCheck } from "lucide-react";
+import { Search, Menu, X, Clock, Trash2, Crown, Heart, User as UserIcon, LogIn, ShieldCheck, Settings2 } from "lucide-react";
 import logoUrl from "@/assets/logo.png";
 import { useState, useEffect, useRef, useMemo } from "react";
 import { series, allGenres } from "@/lib/series";
@@ -17,7 +17,7 @@ export function Header() {
   const [recent, setRecent] = useState<string[]>([]);
   const { active: isPremium, tier, hydrated, deactivate } = usePremium();
   const { user, loading: authLoading } = useAuth();
-  const { isAdmin } = useRole();
+  const { isAdmin, isSuperAdmin } = useRole();
   const searchRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -139,9 +139,16 @@ export function Header() {
           {!authLoading && (user ? (
             <>
             {isAdmin && (
-              <Link to="/admin" className="inline-flex items-center gap-1 rounded-lg border border-[color:var(--neon-blue)]/50 px-2.5 py-1.5 text-xs font-bold text-[color:var(--neon-blue)] hover:bg-[color:var(--neon-blue)]/10 transition-colors" title="Panneau d'administration">
-                <ShieldCheck className="h-3 w-3" /> Administration
-              </Link>
+              <div className="inline-flex items-center gap-1">
+                <Link to="/admin" className="inline-flex items-center gap-1 rounded-lg border border-[color:var(--neon-blue)]/50 px-2.5 py-1.5 text-xs font-bold text-[color:var(--neon-blue)] hover:bg-[color:var(--neon-blue)]/10 transition-colors" title="Panneau d'administration">
+                  <ShieldCheck className="h-3 w-3" /> Administration
+                </Link>
+                {isSuperAdmin && (
+                  <Link to="/admin/settings" className="inline-flex items-center gap-1 rounded-lg border border-[color:var(--neon-blue)]/30 px-2 py-1.5 text-[10px] font-bold text-[color:var(--neon-blue)] hover:bg-[color:var(--neon-blue)]/10 transition-colors" title="Paramètres admin">
+                    <Settings2 className="h-3 w-3" /> Paramètres
+                  </Link>
+                )}
+              </div>
             )}
             <Link to="/profile" className="inline-flex items-center gap-1.5 rounded-lg bg-secondary px-2.5 py-1.5 text-xs font-bold hover:bg-muted transition-colors" title="Mon profil">
               <span className="grid h-5 w-5 place-items-center rounded-md bg-[image:var(--gradient-hero)] text-[10px] font-black text-primary-foreground">
@@ -289,6 +296,12 @@ export function Header() {
           <Link to="/latest" onClick={() => setOpen(false)}>Derniers chapitres</Link>
           <Link to="/library" onClick={() => setOpen(false)}>Ma bibliothèque</Link>
           <Link to="/premium" onClick={() => setOpen(false)}>Premium</Link>
+          {isAdmin && (
+            <Link to="/admin" onClick={() => setOpen(false)} className="inline-flex items-center gap-1.5 text-[color:var(--neon-blue)]"><ShieldCheck className="h-4 w-4" /> Administration</Link>
+          )}
+          {isSuperAdmin && (
+            <Link to="/admin/settings" onClick={() => setOpen(false)} className="inline-flex items-center gap-1.5 text-[color:var(--neon-blue)]"><Settings2 className="h-4 w-4" /> Paramètres admin</Link>
+          )}
           {user ? (
             <Link to="/profile" onClick={() => setOpen(false)} className="inline-flex items-center gap-1.5"><UserIcon className="h-4 w-4" /> Mon profil</Link>
           ) : (

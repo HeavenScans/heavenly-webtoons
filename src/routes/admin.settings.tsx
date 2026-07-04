@@ -95,7 +95,9 @@ function AdminSettingsPage() {
           <FeaturesCard initial={(settings.features ?? {}) as unknown as Features} onSave={(v) => save("features", v as unknown as Record<string, unknown>)} />
           <PremiumCard initial={(settings.premium ?? {}) as unknown as Premium} onSave={(v) => save("premium", v as unknown as Record<string, unknown>)} />
           <TranslationCard initial={(settings.translation ?? {}) as unknown as Translation} onSave={(v) => save("translation", v as unknown as Record<string, unknown>)} />
-          <AdminsCard currentUserId={user?.id ?? null} />
+          <div id="administrateurs">
+            <AdminsCard currentUserId={user?.id ?? null} />
+          </div>
           <DangerZone />
         </div>
       </main>
@@ -105,6 +107,10 @@ function AdminSettingsPage() {
 }
 
 function AdminGuideCard() {
+  const scrollToAdmins = () => {
+    document.getElementById("administrateurs")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   return (
     <section className="rounded-2xl border border-primary/30 bg-primary/5 p-6">
       <header className="mb-4 flex items-start gap-3">
@@ -120,8 +126,8 @@ function AdminGuideCard() {
         <li className="flex gap-3 rounded-xl border border-border bg-card p-4">
           <span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">1</span>
           <div>
-            <p className="text-sm font-semibold">Descends jusqu'en bas</p>
-            <p className="text-xs text-muted-foreground">Fais défiler la page jusqu'à la carte <strong className="text-foreground">Administrateurs</strong>.</p>
+            <p className="text-sm font-semibold">Descends jusqu'à la carte</p>
+            <p className="text-xs text-muted-foreground">Fais défiler la page jusqu'à la carte <strong className="text-foreground">Administrateurs</strong> ou <button onClick={scrollToAdmins} className="text-primary underline hover:no-underline">clique ici pour y aller directement</button>.</p>
           </div>
         </li>
         <li className="flex gap-3 rounded-xl border border-border bg-card p-4">
