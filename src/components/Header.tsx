@@ -17,7 +17,7 @@ export function Header() {
   const [recent, setRecent] = useState<string[]>([]);
   const { active: isPremium, tier, hydrated, deactivate } = usePremium();
   const { user, loading: authLoading } = useAuth();
-  const { isAdmin } = useRole();
+  const { isAdmin, isSuperAdmin } = useRole();
   const searchRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
