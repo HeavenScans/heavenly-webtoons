@@ -90,7 +90,7 @@ function BotDashboard() {
   }, [rows]);
 
   const logAction = async (chapterId: string, action: string, details: Record<string, unknown> = {}) => {
-    await supabase.from("chapter_audit_log").insert({ chapter_id: chapterId, actor_id: user?.id ?? null, action, details });
+    await supabase.from("chapter_audit_log").insert({ chapter_id: chapterId, actor_id: user?.id ?? null, action, details: details as never });
   };
 
   if (authLoading || roleLoading) {
