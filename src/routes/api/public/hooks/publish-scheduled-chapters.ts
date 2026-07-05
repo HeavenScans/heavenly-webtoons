@@ -9,7 +9,7 @@ export const Route = createFileRoute("/api/public/hooks/publish-scheduled-chapte
 
         const { data, error } = await supabaseAdmin
           .from("chapters")
-          .update({ published: true, released_at: nowIso })
+          .update({ published: true, status: "published", released_at: nowIso })
           .eq("published", false)
           .not("scheduled_at", "is", null)
           .lte("scheduled_at", nowIso)

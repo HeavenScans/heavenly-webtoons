@@ -14,6 +14,74 @@ export type Database = {
   }
   public: {
     Tables: {
+      bot_sources: {
+        Row: {
+          created_at: string
+          enabled: boolean
+          id: string
+          kind: string
+          name: string
+          notes: string | null
+          updated_at: string
+          url: string | null
+        }
+        Insert: {
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          kind?: string
+          name: string
+          notes?: string | null
+          updated_at?: string
+          url?: string | null
+        }
+        Update: {
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          kind?: string
+          name?: string
+          notes?: string | null
+          updated_at?: string
+          url?: string | null
+        }
+        Relationships: []
+      }
+      chapter_audit_log: {
+        Row: {
+          action: string
+          actor_id: string | null
+          chapter_id: string | null
+          created_at: string
+          details: Json
+          id: string
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          chapter_id?: string | null
+          created_at?: string
+          details?: Json
+          id?: string
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          chapter_id?: string | null
+          created_at?: string
+          details?: Json
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chapter_audit_log_chapter_id_fkey"
+            columns: ["chapter_id"]
+            isOneToOne: false
+            referencedRelation: "chapters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       chapters: {
         Row: {
           created_at: string
@@ -25,7 +93,11 @@ export type Database = {
           released_at: string
           scheduled_at: string | null
           series_id: string
+          source: string
+          status: string
+          thumbnail_url: string | null
           title: string | null
+          watermarked: boolean
         }
         Insert: {
           created_at?: string
@@ -37,7 +109,11 @@ export type Database = {
           released_at?: string
           scheduled_at?: string | null
           series_id: string
+          source?: string
+          status?: string
+          thumbnail_url?: string | null
           title?: string | null
+          watermarked?: boolean
         }
         Update: {
           created_at?: string
@@ -49,7 +125,11 @@ export type Database = {
           released_at?: string
           scheduled_at?: string | null
           series_id?: string
+          source?: string
+          status?: string
+          thumbnail_url?: string | null
           title?: string | null
+          watermarked?: boolean
         }
         Relationships: [
           {
