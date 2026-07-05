@@ -113,6 +113,9 @@ function AdminPage() {
             <Link to="/admin/ai" className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-[#6D4AFF] to-[#4DA6FF] px-3 py-2 text-sm font-semibold text-white shadow-[0_10px_30px_-10px_rgba(109,74,255,0.7)]">
               <Bot className="h-4 w-4" /> Agent IA
             </Link>
+            <Link to="/admin/bot" className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-emerald-500 to-cyan-500 px-3 py-2 text-sm font-semibold text-white shadow-[0_10px_30px_-10px_rgba(16,185,129,0.7)]">
+              <Bot className="h-4 w-4" /> HeavenBot
+            </Link>
             {isAdmin && (
               <Link to="/admin/settings" className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-2 text-sm font-semibold hover:bg-muted">
                 <Settings2 className="h-4 w-4" /> Paramètres
