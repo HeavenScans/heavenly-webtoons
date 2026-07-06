@@ -165,6 +165,16 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-2" ref={searchRef}>
+          {!authLoading && user && isAdmin && (
+            <Link
+              to="/admin"
+              aria-label="Administration"
+              title="Administration"
+              className="md:hidden inline-flex items-center gap-1 rounded-lg border border-[color:var(--neon-blue)]/50 bg-[color:var(--neon-blue)]/10 px-2 py-1.5 text-[11px] font-bold text-[color:var(--neon-blue)] hover:bg-[color:var(--neon-blue)]/20 transition-colors"
+            >
+              <ShieldCheck className="h-3.5 w-3.5" /> Admin
+            </Link>
+          )}
           <div className="relative">
             <button
               onClick={() => setSearchOpen((v) => !v)}
