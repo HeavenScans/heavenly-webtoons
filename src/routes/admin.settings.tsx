@@ -703,14 +703,14 @@ function AdminsCard({ currentUserId }: { currentUserId: string | null }) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Array<{ id: string; username: string | null; display_name: string | null; avatar_url: string | null }>>([]);
   const [searching, setSearching] = useState(false);
-  const [msg, setMsg] = useState<string | null>(null);
+  const [msg, setMsg] = useState<{ kind: "ok" | "err"; text: string } | null>(null);
 
   const load = async () => {
     setLoading(true);
     const { data: roles } = await supabase
       .from("user_roles")
       .select("user_id, role")
-      .in("role", ["admin", "super_admin"]);
+      .in("role", ["admin", "super_admin", "team"]);
     const ids = Array.from(new Set((roles ?? []).map((r) => r.user_id)));
     let profilesById = new Map<string, { username: string | null; display_name: string | null; avatar_url: string | null }>();
     if (ids.length) {
@@ -749,11 +749,11 @@ function AdminsCard({ currentUserId }: { currentUserId: string | null }) {
     setSearching(false);
   };
 
-  const grant = async (userId: string, role: "admin" | "super_admin") => {
+  const grant = async (userId: string, role: "admin" | "super_admin" | "team") => {
     setMsg(null);
     const { error } = await supabase.from("user_roles").insert({ user_id: userId, role });
-    if (error) { setMsg(error.message); return; }
-    setMsg(`Rôle ${role} attribué.`);
+    if (error) { setMsg({ kind: "err", text: error.message }); return; }
+    setMsg({ kind: "ok", text: `Rôle ${roleLabel(role)} attribué avec succès.` });
     setQuery(""); setResults([]);
     await load();
   };
@@ -764,44 +764,61 @@ function AdminsCard({ currentUserId }: { currentUserId: string | null }) {
     }
     setMsg(null);
     const { error } = await supabase.from("user_roles").delete().eq("user_id", userId).eq("role", role);
-    if (error) { setMsg(error.message); return; }
-    setMsg("Rôle retiré.");
+    if (error) { setMsg({ kind: "err", text: error.message }); return; }
+    setMsg({ kind: "ok", text: "Rôle retiré." });
     await load();
+  };
+
+  const counts = {
+    super_admin: rows.filter((r) => r.role === "super_admin").length,
+    admin: rows.filter((r) => r.role === "admin").length,
+    team: rows.filter((r) => r.role === "team").length,
   };
 
   return (
     <Card icon={<ShieldCheck className="h-5 w-5" />} title="Administrateurs" description="Attribue ou retire les rôles admin et super_admin.">
-      <div className="space-y-5">
+      <div className="space-y-6">
+        <div className="grid grid-cols-3 gap-3">
+          <StatPill icon={<Crown className="h-4 w-4" />} label="Super admin" value={counts.super_admin} tone="primary" />
+          <StatPill icon={<ShieldCheck className="h-4 w-4" />} label="Admin" value={counts.admin} tone="accent" />
+          <StatPill icon={<UserPlus className="h-4 w-4" />} label="Modérateur" value={counts.team} tone="muted" />
+        </div>
+
         <div>
-          <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-muted-foreground">Ajouter un administrateur</label>
+          <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-muted-foreground">Ajouter un membre à l'équipe</label>
           <div className="relative">
-            <div className="flex items-center gap-2 rounded-lg border border-border bg-background px-3">
+            <div className="flex items-center gap-2 rounded-xl border border-border bg-background px-3 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 transition">
               <Search className="h-4 w-4 text-muted-foreground" />
               <input
                 value={query}
                 onChange={(e) => search(e.target.value)}
                 placeholder="Rechercher par pseudo ou nom d'affichage…"
-                className="flex-1 bg-transparent py-2.5 text-sm outline-none"
+                className="flex-1 bg-transparent py-3 text-sm outline-none"
               />
               {searching && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
             </div>
             {results.length > 0 && (
-              <div className="mt-2 max-h-72 overflow-y-auto rounded-lg border border-border bg-card divide-y divide-border">
+              <div className="mt-2 max-h-80 overflow-y-auto rounded-xl border border-border bg-card divide-y divide-border shadow-sm">
                 {results.map((p) => (
-                  <div key={p.id} className="flex items-center gap-3 p-2">
-                    <div className="grid h-8 w-8 place-items-center rounded-full bg-muted text-xs font-bold">
+                  <div key={p.id} className="flex flex-wrap items-center gap-2 p-3 hover:bg-muted/40 transition">
+                    <div className="grid h-9 w-9 place-items-center rounded-full bg-gradient-to-br from-[#6D4AFF]/30 to-[#4DA6FF]/30 text-xs font-bold overflow-hidden">
                       {p.avatar_url ? <img src={p.avatar_url} alt="" className="h-full w-full rounded-full object-cover" /> : (p.username ?? "?").charAt(0).toUpperCase()}
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="truncate text-sm font-semibold">{p.display_name || p.username || "Sans nom"}</div>
                       <div className="truncate text-xs text-muted-foreground">@{p.username ?? "—"} · <code className="text-[10px]">{p.id.slice(0, 8)}</code></div>
                     </div>
-                    <button type="button" onClick={() => grant(p.id, "admin")} className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 text-xs font-semibold hover:border-primary hover:text-primary">
-                      <UserPlus className="h-3 w-3" /> Admin
-                    </button>
-                    <button type="button" onClick={() => grant(p.id, "super_admin")} className="inline-flex items-center gap-1 rounded-md bg-primary px-2 py-1 text-xs font-bold text-primary-foreground">
-                      <Crown className="h-3 w-3" /> Super
-                    </button>
+                    <div className="flex items-center gap-1.5">
+                      <button type="button" onClick={() => grant(p.id, "team")} className="inline-flex items-center gap-1 rounded-md border border-border px-2.5 py-1.5 text-xs font-semibold hover:border-foreground hover:bg-muted transition" title="Modérateur / équipe">
+                        <UserPlus className="h-3 w-3" /> Modo
+                      </button>
+                      <button type="button" onClick={() => grant(p.id, "admin")} className="inline-flex items-center gap-1 rounded-md border border-[#4DA6FF]/50 bg-[#4DA6FF]/10 px-2.5 py-1.5 text-xs font-semibold text-[#4DA6FF] hover:bg-[#4DA6FF]/20 transition">
+                        <ShieldCheck className="h-3 w-3" /> Admin
+                      </button>
+                      <button type="button" onClick={() => grant(p.id, "super_admin")} className="inline-flex items-center gap-1 rounded-md bg-gradient-to-r from-[#6D4AFF] to-[#4DA6FF] px-2.5 py-1.5 text-xs font-bold text-white shadow-[0_4px_14px_-4px_rgba(109,74,255,0.6)] hover:brightness-110 transition">
+                        <Crown className="h-3 w-3" /> Super
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -812,22 +829,29 @@ function AdminsCard({ currentUserId }: { currentUserId: string | null }) {
           </div>
         </div>
 
-        {msg && <div className="rounded-lg border border-border bg-muted/50 px-3 py-2 text-xs">{msg}</div>}
+        {msg && (
+          <div className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-xs ${msg.kind === "ok" ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-500" : "border-destructive/40 bg-destructive/10 text-destructive"}`}>
+            {msg.kind === "ok" ? <CheckCircle2 className="h-3.5 w-3.5" /> : <AlertTriangle className="h-3.5 w-3.5" />}
+            {msg.text}
+          </div>
+        )}
 
         <div>
           <div className="mb-2 flex items-center justify-between">
-            <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Admins actuels ({rows.length})</label>
+            <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Équipe actuelle ({rows.length})</label>
             <button type="button" onClick={load} className="text-xs text-muted-foreground hover:text-foreground">Rafraîchir</button>
           </div>
           {loading ? (
             <div className="grid place-items-center py-6"><Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /></div>
           ) : rows.length === 0 ? (
-            <p className="text-sm text-muted-foreground">Aucun administrateur enregistré.</p>
+            <div className="rounded-xl border border-dashed border-border bg-muted/20 py-8 text-center text-sm text-muted-foreground">
+              Aucun membre d'équipe enregistré. Utilise la recherche ci-dessus pour ajouter le premier.
+            </div>
           ) : (
-            <div className="divide-y divide-border rounded-lg border border-border">
+            <div className="divide-y divide-border rounded-xl border border-border overflow-hidden">
               {rows.map((r) => (
-                <div key={`${r.user_id}-${r.role}`} className="flex items-center gap-3 p-3">
-                  <div className="grid h-9 w-9 place-items-center rounded-full bg-muted text-xs font-bold overflow-hidden">
+                <div key={`${r.user_id}-${r.role}`} className="flex items-center gap-3 p-3 hover:bg-muted/30 transition">
+                  <div className="grid h-10 w-10 place-items-center rounded-full bg-gradient-to-br from-[#6D4AFF]/30 to-[#4DA6FF]/30 text-xs font-bold overflow-hidden">
                     {r.avatar_url ? <img src={r.avatar_url} alt="" className="h-full w-full object-cover" /> : (r.username ?? "?").charAt(0).toUpperCase()}
                   </div>
                   <div className="min-w-0 flex-1">
@@ -837,10 +861,7 @@ function AdminsCard({ currentUserId }: { currentUserId: string | null }) {
                     </div>
                     <div className="truncate text-xs text-muted-foreground">@{r.username ?? "—"}</div>
                   </div>
-                  <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${r.role === "super_admin" ? "bg-primary/15 text-primary" : "bg-muted text-foreground"}`}>
-                    {r.role === "super_admin" ? <Crown className="h-3 w-3" /> : <ShieldCheck className="h-3 w-3" />}
-                    {r.role}
-                  </span>
+                  <RoleBadge role={r.role} />
                   <button type="button" onClick={() => revoke(r.user_id, r.role)} className="grid h-8 w-8 place-items-center rounded-md text-muted-foreground hover:bg-destructive/10 hover:text-destructive" title="Retirer">
                     <Trash2 className="h-4 w-4" />
                   </button>
@@ -852,4 +873,51 @@ function AdminsCard({ currentUserId }: { currentUserId: string | null }) {
       </div>
     </Card>
   );
+}
+
+function roleLabel(role: "admin" | "super_admin" | "team" | "user") {
+  if (role === "super_admin") return "Super admin";
+  if (role === "admin") return "Admin";
+  if (role === "team") return "Modérateur";
+  return "Utilisateur";
+}
+
+function StatPill({ icon, label, value, tone }: { icon: React.ReactNode; label: string; value: number; tone: "primary" | "accent" | "muted" }) {
+  const cls =
+    tone === "primary"
+      ? "border-[#6D4AFF]/40 bg-gradient-to-br from-[#6D4AFF]/15 to-[#4DA6FF]/10 text-foreground"
+      : tone === "accent"
+      ? "border-[#4DA6FF]/40 bg-[#4DA6FF]/10 text-foreground"
+      : "border-border bg-muted/40 text-foreground";
+  return (
+    <div className={`rounded-xl border p-3 ${cls}`}>
+      <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">{icon}{label}</div>
+      <div className="mt-1 text-2xl font-black tabular-nums">{value}</div>
+    </div>
+  );
+}
+
+function RoleBadge({ role }: { role: AdminRow["role"] }) {
+  if (role === "super_admin") {
+    return (
+      <span className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-[#6D4AFF] to-[#4DA6FF] px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm">
+        <Crown className="h-3 w-3" /> Super
+      </span>
+    );
+  }
+  if (role === "admin") {
+    return (
+      <span className="inline-flex items-center gap-1 rounded-full border border-[#4DA6FF]/50 bg-[#4DA6FF]/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-[#4DA6FF]">
+        <ShieldCheck className="h-3 w-3" /> Admin
+      </span>
+    );
+  }
+  if (role === "team") {
+    return (
+      <span className="inline-flex items-center gap-1 rounded-full border border-border bg-muted px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-foreground">
+        <UserPlus className="h-3 w-3" /> Modo
+      </span>
+    );
+  }
+  return <span className="text-[10px] uppercase text-muted-foreground">{role}</span>;
 }
