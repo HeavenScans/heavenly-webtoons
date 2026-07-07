@@ -213,7 +213,15 @@ function SeriesList({
 }
 
 function QuickActions() {
-  const actions = [
+  const actions: Array<{
+    to: string;
+    hash?: string;
+    title: string;
+    desc: string;
+    icon: typeof Bot;
+    gradient: string;
+    shadow: string;
+  }> = [
     {
       to: "/admin/settings",
       hash: "administrateurs",
@@ -247,7 +255,7 @@ function QuickActions() {
       gradient: "from-slate-500 to-slate-700",
       shadow: "shadow-[0_14px_40px_-14px_rgba(100,116,139,0.5)]",
     },
-  ] as const;
+  ];
 
   return (
     <div className="mb-8 grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
@@ -255,7 +263,7 @@ function QuickActions() {
         <Link
           key={a.title}
           to={a.to}
-          hash={a.hash}
+          hash={a.hash as string | undefined}
           className={`group relative overflow-hidden rounded-2xl bg-gradient-to-br ${a.gradient} p-4 text-white ${a.shadow} transition hover:brightness-110 active:scale-[.98]`}
         >
           <div className="absolute -right-6 -top-6 h-24 w-24 rounded-full bg-white/20 blur-2xl transition group-hover:bg-white/30" />
