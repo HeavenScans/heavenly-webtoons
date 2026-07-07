@@ -212,6 +212,68 @@ function SeriesList({
   );
 }
 
+function QuickActions() {
+  const actions = [
+    {
+      to: "/admin/settings",
+      hash: "administrateurs",
+      title: "Ajouter un administrateur",
+      desc: "Nomme admin, super admin ou modérateur.",
+      icon: UserPlus,
+      gradient: "from-[#6D4AFF] to-[#4DA6FF]",
+      shadow: "shadow-[0_14px_40px_-14px_rgba(109,74,255,0.7)]",
+    },
+    {
+      to: "/admin/ai",
+      title: "Agent IA — Astra",
+      desc: "Publie, analyse, programme via chat.",
+      icon: Sparkles,
+      gradient: "from-[#F5B041] to-[#6D4AFF]",
+      shadow: "shadow-[0_14px_40px_-14px_rgba(245,176,65,0.55)]",
+    },
+    {
+      to: "/admin/bot",
+      title: "HeavenBot",
+      desc: "Pipeline auto des chapitres.",
+      icon: Bot,
+      gradient: "from-emerald-500 to-cyan-500",
+      shadow: "shadow-[0_14px_40px_-14px_rgba(16,185,129,0.6)]",
+    },
+    {
+      to: "/admin/settings",
+      title: "Paramètres du site",
+      desc: "Identité, tarifs, intégrations.",
+      icon: Settings2,
+      gradient: "from-slate-500 to-slate-700",
+      shadow: "shadow-[0_14px_40px_-14px_rgba(100,116,139,0.5)]",
+    },
+  ] as const;
+
+  return (
+    <div className="mb-8 grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+      {actions.map((a) => (
+        <Link
+          key={a.title}
+          to={a.to}
+          hash={a.hash}
+          className={`group relative overflow-hidden rounded-2xl bg-gradient-to-br ${a.gradient} p-4 text-white ${a.shadow} transition hover:brightness-110 active:scale-[.98]`}
+        >
+          <div className="absolute -right-6 -top-6 h-24 w-24 rounded-full bg-white/20 blur-2xl transition group-hover:bg-white/30" />
+          <div className="relative flex items-start gap-3">
+            <div className="grid h-10 w-10 flex-shrink-0 place-items-center rounded-xl bg-white/20 ring-1 ring-white/30 backdrop-blur">
+              <a.icon className="h-5 w-5" />
+            </div>
+            <div className="min-w-0">
+              <div className="text-sm font-black leading-tight">{a.title}</div>
+              <div className="mt-0.5 text-[11px] font-medium text-white/85">{a.desc}</div>
+            </div>
+          </div>
+        </Link>
+      ))}
+    </div>
+  );
+}
+
 function SeriesEditor({ series, onSaved, isAdmin }: { series: SeriesRow | null; onSaved: (s: SeriesRow) => void; isAdmin: boolean }) {
   const [form, setForm] = useState<SeriesRow | null>(series);
   const [saving, setSaving] = useState(false);
