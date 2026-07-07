@@ -6,7 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useRole } from "@/hooks/useRole";
 import { supabase } from "@/integrations/supabase/client";
 import { allGenres } from "@/lib/series";
-import { Loader2, Plus, Trash2, Upload, BookPlus, Library, ShieldAlert, RefreshCw, Bot, Calendar, Zap, Clock, Settings2 } from "lucide-react";
+import { Loader2, Plus, Trash2, Upload, BookPlus, Library, ShieldAlert, RefreshCw, Bot, Calendar, Zap, Clock, Settings2, UserPlus, Sparkles, ShieldCheck } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({ meta: [{ title: "Admin — HeavenScans" }, { name: "robots", content: "noindex" }] }),
@@ -109,23 +109,12 @@ function AdminPage() {
             <p className="text-sm font-semibold uppercase tracking-wider text-primary">Back-office</p>
             <h1 className="text-3xl sm:text-4xl font-black">Gestion du catalogue</h1>
           </div>
-          <div className="flex items-center gap-2">
-            <Link to="/admin/ai" className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-[#6D4AFF] to-[#4DA6FF] px-3 py-2 text-sm font-semibold text-white shadow-[0_10px_30px_-10px_rgba(109,74,255,0.7)]">
-              <Bot className="h-4 w-4" /> Agent IA
-            </Link>
-            <Link to="/admin/bot" className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-emerald-500 to-cyan-500 px-3 py-2 text-sm font-semibold text-white shadow-[0_10px_30px_-10px_rgba(16,185,129,0.7)]">
-              <Bot className="h-4 w-4" /> HeavenBot
-            </Link>
-            {isAdmin && (
-              <Link to="/admin/settings" className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-2 text-sm font-semibold hover:bg-muted">
-                <Settings2 className="h-4 w-4" /> Paramètres
-              </Link>
-            )}
-            <button onClick={refresh} className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-2 text-sm font-semibold hover:bg-muted">
-              <RefreshCw className="h-4 w-4" /> Actualiser
-            </button>
-          </div>
+          <button onClick={refresh} className="hidden sm:inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-2 text-sm font-semibold hover:bg-muted">
+            <RefreshCw className="h-4 w-4" /> Actualiser
+          </button>
         </div>
+
+        <QuickActions />
 
         <div className="grid gap-6 lg:grid-cols-[1fr_1.4fr]">
           <SeriesList
